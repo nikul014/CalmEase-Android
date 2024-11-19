@@ -78,19 +78,4 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
 
-    // Added dependencies for Meditate Screen
-    implementation("androidx.compose.ui:ui:1.4.0")
-    implementation("androidx.navigation:navigation-compose:2.5.3")
-    implementation("io.coil-kt:coil-compose:2.2.2")
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.activity:activity-compose:1.9.2")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
-    implementation("androidx.compose.ui:ui-graphics:1.5.0")
-    implementation("androidx.compose.foundation:foundation")
-    implementation("io.coil-kt:coil-compose:1.4.0")
-    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
-
 }
