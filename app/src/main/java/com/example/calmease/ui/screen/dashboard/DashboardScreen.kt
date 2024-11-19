@@ -1,5 +1,7 @@
 package com.example.calmease.ui.screen.dashboard
 
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -9,10 +11,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import com.example.calmease.R
+import com.example.calmease.ui.screen.Meditation.MeditationDetailScreen
+import com.example.calmease.ui.screen.Meditation.MeditationScreen
+import com.example.calmease.ui.theme.CalmPrimaryDark
+import com.example.calmease.ui.theme.CalmPrimaryLight
+import com.example.calmease.ui.theme.CalmSecondaryDark
+import com.example.calmease.ui.theme.CalmTertiaryDark
 
 @Composable
 fun DashboardScreen() {
@@ -31,7 +42,13 @@ fun DashboardScreen() {
                 navController = navController,
                 startDestination = "meditation"
             ) {
-                composable("meditation") { MeditationScreen() }
+                composable("meditation") { MeditationScreen(viewModel = viewModel(),navController = navController) }
+                composable("meditation_detail/{meditation_id}") { backStackEntry ->
+                    val meditationIdString = backStackEntry.arguments?.getString("meditation_id")
+                    val meditationId = meditationIdString?.toIntOrNull()
+                    Log.d("MeditationDetail", "Meditation ID: $meditationId")
+                    MeditationDetailScreen(meditationId = meditationId)
+                }
                 composable("breathing") { BreathingScreen() }
                 composable("articles") { ArticleScreen() }
                 composable("profile") { ProfileScreen() }
@@ -43,15 +60,30 @@ fun DashboardScreen() {
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
+    val currentRoute = navController.currentBackStackEntryAsState()?.value?.destination?.route
     NavigationBar(
         modifier = Modifier.fillMaxWidth()
     ) {
         NavigationBarItem(
-            selected = false,
+            selected = currentRoute == "meditation", // Set to `true` when the item is active
             onClick = { navController.navigate("meditation") },
             label = { Text("Meditation") },
-            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) }
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_meditate_name),
+                    contentDescription = "Meditation Icon"
+                )
+            },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.White,
+                selectedTextColor = CalmPrimaryDark,
+                indicatorColor = CalmPrimaryDark,
+                unselectedIconColor = Color.Gray,
+                unselectedTextColor = Color.Gray
+            )
         )
+
+
         NavigationBarItem(
             selected = false,
             onClick = { navController.navigate("breathing") },
@@ -79,10 +111,8 @@ fun BottomNavigationBar(navController: NavController) {
     }
 }
 
-@Composable
-fun MeditationScreen() {
-    Text(text = "Meditation Screen")
-}
+
+
 
 @Composable
 fun BreathingScreen() {
