@@ -19,18 +19,21 @@ import com.example.calmease.ui.screen.Meditation.highlightText
 import com.example.calmease.viewmodel.Article
 
 @Composable
-fun ArticleItem(article: Article, searchQuery: String = "", navController: NavController){
-    val highlightTitle = searchQuery.isNotEmpty() && article.title.contains(searchQuery, ignoreCase = true)
-    val highlightDescription = searchQuery.isNotEmpty() && article.description.contains(searchQuery, ignoreCase = true)
+fun ArticleItem(article: Article, searchQuery: String = "", navController: NavController) {
+    val highlightTitle =
+        searchQuery.isNotEmpty() && article.title.contains(searchQuery, ignoreCase = true)
+    val highlightDescription =
+        searchQuery.isNotEmpty() && article.description.contains(searchQuery, ignoreCase = true)
 
-    Card (
+
+    Card(
         modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 8.dp),
-   // Handle click event
-    elevation = CardDefaults.cardElevation(4.dp)
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        // Handle click event
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
