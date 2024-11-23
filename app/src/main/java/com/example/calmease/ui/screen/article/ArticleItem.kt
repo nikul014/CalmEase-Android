@@ -1,7 +1,10 @@
 package com.example.calmease.ui.screen.article
 
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,7 +32,14 @@ fun ArticleItem(article: Article, searchQuery: String = "", navController: NavCo
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .fillMaxHeight()
+            .padding(vertical = 8.dp)
+            .clickable {
+                val articleId = article.Article_id
+                Log.d("ArticleDetail", "Article ID: $articleId")
+                navController.navigate("article_detail/$articleId")
+
+            },
         // Handle click event
         elevation = CardDefaults.cardElevation(4.dp)
     ) {

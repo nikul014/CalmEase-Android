@@ -20,6 +20,7 @@ import androidx.navigation.compose.*
 import com.example.calmease.R
 import com.example.calmease.ui.screen.Meditation.MeditationDetailScreen
 import com.example.calmease.ui.screen.Meditation.MeditationScreen
+import com.example.calmease.ui.screen.article.ArticleDetailScreen
 import com.example.calmease.ui.screen.article.ArticleScreen
 import com.example.calmease.ui.theme.CalmPrimaryDark
 import com.example.calmease.ui.theme.CalmPrimaryLight
@@ -52,6 +53,14 @@ fun DashboardScreen() {
                 }
                 composable("breathing") { BreathingScreen() }
                 composable("articles") { ArticleScreen(viewModel = viewModel(),navController = navController) }
+                composable("article_detail/{articleId}") { backStackEntry ->
+                    val articleIdString = backStackEntry.arguments?.getString("articleId")
+                    val articleId = articleIdString?.toIntOrNull()
+                    Log.d("MeditationDetail", "Meditation ID: $articleId")
+                    if (articleId != null) {
+                        ArticleDetailScreen(articleId = articleId)
+                    }
+                }
                 composable("profile") { ProfileScreen() }
                 composable("more") { MoreScreen() }
             }
