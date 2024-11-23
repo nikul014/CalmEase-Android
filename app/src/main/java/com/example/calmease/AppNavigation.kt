@@ -15,7 +15,8 @@ import com.example.calmease.ui.screen.signup.SignupScreen
 fun AppNavigation() {
     val navController = rememberNavController()
 
-    val isLoggedIn = CalmEaseApplication.sharedPreferenceHelper.get(SharedPrefKeys.TOKEN, "")        .isNotEmpty()
+    val isLoggedIn =
+        CalmEaseApplication.sharedPreferenceHelper.get(SharedPrefKeys.TOKEN, "").isNotEmpty()
 
     val startDestination = if (isLoggedIn) "dashboard" else "login"
 
