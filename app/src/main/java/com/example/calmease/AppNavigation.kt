@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calmease.enums.SharedPrefKeys
 import com.example.calmease.ui.screen.about.AboutScreen
+import com.example.calmease.ui.screen.breathing.BreathingScreen
 import com.example.calmease.ui.screen.contact.ContactScreen
 import com.example.calmease.ui.screen.dashboard.DashboardScreen
 import com.example.calmease.ui.screen.login.LoginScreen
@@ -18,13 +19,14 @@ fun AppNavigation() {
     val isLoggedIn =
         CalmEaseApplication.sharedPreferenceHelper.get(SharedPrefKeys.TOKEN, "").isNotEmpty()
 
-    val startDestination = if (isLoggedIn) "dashboard" else "login"
+   // val startDestination = if (isLoggedIn) "dashboard" else "login"
 
-    NavHost(navController = navController, startDestination = startDestination) {
+    NavHost(navController = navController, startDestination = "dashboard") {
         composable("login") { LoginScreen(navController) }
         composable("signup") { SignupScreen(navController) }
         composable("dashboard") { DashboardScreen() }
         composable("about") { AboutScreen(navController) }
         composable("contact") { ContactScreen(navController) }
+        composable("breathing") { BreathingScreen() }
     }
 }

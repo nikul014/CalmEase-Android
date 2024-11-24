@@ -22,6 +22,7 @@ import com.example.calmease.ui.screen.Meditation.MeditationDetailScreen
 import com.example.calmease.ui.screen.Meditation.MeditationScreen
 import com.example.calmease.ui.screen.article.ArticleDetailScreen
 import com.example.calmease.ui.screen.article.ArticleScreen
+import com.example.calmease.ui.screen.breathing.BreathingScreen
 import com.example.calmease.ui.theme.CalmPrimaryDark
 import com.example.calmease.ui.theme.CalmPrimaryLight
 import com.example.calmease.ui.theme.CalmSecondaryDark
@@ -93,11 +94,17 @@ fun BottomNavigationBar(navController: NavController) {
 
 
         NavigationBarItem(
-            selected = false,
+            selected = currentRoute == "breathing",
             onClick = { navController.navigate("breathing") },
             label = { Text("Breathing") },
-            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) }
+            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.White,
+                selectedTextColor = CalmPrimaryDark,
+                indicatorColor = CalmPrimaryDark,
+            )
         )
+
         NavigationBarItem(
             selected = currentRoute == "articles",
             onClick = { navController.navigate("articles") },
