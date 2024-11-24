@@ -24,7 +24,14 @@ import com.example.calmease.R
 import com.example.calmease.ui.screen.meditation.MeditationDetailScreen
 import com.example.calmease.ui.screen.meditation.MeditationScreen
 import com.example.calmease.ui.screen.sessions.VideoActivity
+import com.example.calmease.ui.screen.Meditation.MeditationDetailScreen
+import com.example.calmease.ui.screen.Meditation.MeditationScreen
+import com.example.calmease.ui.screen.article.ArticleDetailScreen
+import com.example.calmease.ui.screen.article.ArticleScreen
 import com.example.calmease.ui.theme.CalmPrimaryDark
+import com.example.calmease.ui.theme.CalmPrimaryLight
+import com.example.calmease.ui.theme.CalmSecondaryDark
+import com.example.calmease.ui.theme.CalmTertiaryDark
 
 @Composable
 fun DashboardScreen() {
@@ -59,7 +66,16 @@ fun DashboardScreen() {
                         }
                         ContextCompat.startActivity(context, intent, null)
                     } }
-                composable("articles") { ArticleScreen() }
+                composable("articles") { ArticleScreen(viewModel = viewModel(),navController = navController) }
+                composable("article_detail/{articleId}") { backStackEntry ->
+                    val articleIdString = backStackEntry.arguments?.getString("articleId")
+                    val articleId = articleIdString?.toIntOrNull()
+                    Log.d("MeditationDetail", "Meditation ID: $articleId")
+                    if (articleId != null) {
+                        ArticleDetailScreen(articleId = articleId)
+                    }
+                }
+                composable("profile") { ProfileScreen() }
                 composable("more") { MoreScreen() }
             }
         }
@@ -100,15 +116,22 @@ fun BottomNavigationBar(navController: NavController) {
         )
 
         NavigationBarItem(
+            selected = currentRoute == "articles",
+            onClick = { navController.navigate("articles") },
+            label = { Text("Articles") },
+            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) },
+
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.White,
+                selectedTextColor = CalmPrimaryDark,
+                indicatorColor = CalmPrimaryDark,
+            )
+        )
+
+        NavigationBarItem(
             selected = false,
             onClick = { navController.navigate("memories") },
             label = { Text("Good Memories") },
-            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate("articles") },
-            label = { Text("Articles") },
             icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) }
         )
         NavigationBarItem(
@@ -128,10 +151,10 @@ fun BreathingScreen() {
     Text(text = "Breathing Screen")
 }
 
-@Composable
-fun ArticleScreen() {
-    Text(text = "Article Screen")
-}
+//@Composable
+//fun ArticleScreen() {
+//    Text(text = "Article Screen")
+//}
 
 @Composable
 fun ProfileScreen() {
