@@ -77,5 +77,16 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.compose.v2)
+    implementation(libs.coil.compose.v2)
+    implementation(libs.gson)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.foundation)
+    implementation(libs.coil.compose.v1)
+    implementation(libs.chromecast.sender)
+    implementation(libs.agora.rtc.sdk)
+
 
 }

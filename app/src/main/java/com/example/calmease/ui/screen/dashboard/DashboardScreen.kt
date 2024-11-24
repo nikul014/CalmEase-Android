@@ -1,29 +1,30 @@
 package com.example.calmease.ui.screen.dashboard
 
+import android.content.Intent
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import com.example.calmease.R
-import com.example.calmease.ui.screen.Meditation.MeditationDetailScreen
-import com.example.calmease.ui.screen.Meditation.MeditationScreen
+import com.example.calmease.ui.screen.meditation.MeditationDetailScreen
+import com.example.calmease.ui.screen.meditation.MeditationScreen
+import com.example.calmease.ui.screen.sessions.VideoActivity
 import com.example.calmease.ui.theme.CalmPrimaryDark
-import com.example.calmease.ui.theme.CalmPrimaryLight
-import com.example.calmease.ui.theme.CalmSecondaryDark
-import com.example.calmease.ui.theme.CalmTertiaryDark
 
 @Composable
 fun DashboardScreen() {
@@ -50,8 +51,15 @@ fun DashboardScreen() {
                     MeditationDetailScreen(meditationId = meditationId)
                 }
                 composable("breathing") { BreathingScreen() }
+                composable("memories") { val context = LocalContext.current
+                    LaunchedEffect(Unit) {
+                        val intent = Intent(context, VideoActivity::class.java).apply {
+                            putExtra("ChannelName", "2")
+                            putExtra("UserRole", "publisher")
+                        }
+                        ContextCompat.startActivity(context, intent, null)
+                    } }
                 composable("articles") { ArticleScreen() }
-                composable("profile") { ProfileScreen() }
                 composable("more") { MoreScreen() }
             }
         }
@@ -90,16 +98,17 @@ fun BottomNavigationBar(navController: NavController) {
             label = { Text("Breathing") },
             icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) }
         )
+
         NavigationBarItem(
             selected = false,
-            onClick = { navController.navigate("articles") },
-            label = { Text("Articles") },
+            onClick = { navController.navigate("memories") },
+            label = { Text("Good Memories") },
             icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) }
         )
         NavigationBarItem(
             selected = false,
-            onClick = { navController.navigate("profile") },
-            label = { Text("Profile") },
+            onClick = { navController.navigate("articles") },
+            label = { Text("Articles") },
             icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) }
         )
         NavigationBarItem(
@@ -128,6 +137,21 @@ fun ArticleScreen() {
 fun ProfileScreen() {
     Text(text = "Profile Screen")
 }
+@Composable
+fun MemoriesScreen(channelName: String, userRole: String) {
+    val context = LocalContext.current
+
+    Button(onClick = {
+        val intent = Intent(context, VideoActivity::class.java).apply {
+            putExtra("ChannelName", channelName)
+            putExtra("UserRole", userRole)
+        }
+        ContextCompat.startActivity(context, intent, null)
+    }) {
+        Text("Start Video Activity")
+    }
+}
+
 
 @Composable
 fun MoreScreen() {

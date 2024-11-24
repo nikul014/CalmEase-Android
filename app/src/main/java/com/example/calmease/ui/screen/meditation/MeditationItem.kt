@@ -1,4 +1,4 @@
-package com.example.calmease.ui.screen.Meditation
+package com.example.calmease.ui.screen.meditation
 
 import android.util.Log
 import androidx.compose.foundation.clickable

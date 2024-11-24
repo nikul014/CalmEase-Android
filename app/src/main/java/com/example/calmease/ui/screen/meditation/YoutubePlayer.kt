@@ -1,4 +1,4 @@
-package com.example.calmease.ui.screen.Meditation
+package com.example.calmease.ui.screen.meditation
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

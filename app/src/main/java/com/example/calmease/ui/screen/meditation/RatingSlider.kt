@@ -1,10 +1,9 @@
-package com.example.calmease.ui.screen.Meditation
+package com.example.calmease.ui.screen.meditation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.example.calmease.ui.theme.CalmPrimaryDark

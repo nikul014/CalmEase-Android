@@ -1,7 +1,6 @@
-package com.example.calmease.ui.screen.Meditation
+package com.example.calmease.ui.screen.meditation
 
 import SearchBox
-import androidx.compose.foundation.content.MediaType.Companion.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,15 +15,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.calmease.viewmodel.Meditation
 import androidx.navigation.NavController
-import com.example.calmease.ui.theme.Poppins
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import com.example.calmease.ui.screen.Meditation.FilterSection
-import com.example.calmease.ui.screen.Meditation.MeditationItem
-
 
 
 @Composable
