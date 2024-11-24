@@ -1,0 +1,44 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "title": "Box Breathing",
+      "category_image": "https://storage.googleapis.com/calm-ease/image/boxed_breathing.jpg",
+      "background_image": "https://storage.googleapis.com/calm-ease/image/ai-generated-serene-of-lone-tree-standing-partially-submerged-in-calm-body-of-water-with-the-gradient-hues-of-sunset-or-sunrise-reflecting-on-the-water-surface-ai-generated-photo.jpg",
+      "exercises": [
+        {
+          "timing": "3 | 3 | 3 | 3",
+          "breaths_per_min": "5.0",
+          "description": "Inhale, hold, exhale, and hold for equal periods of time.",
+          "audio_url": "https://storage.googleapis.com/calm-ease/audio/bird-chirping-sound.mp3"
+        },
+        {
+          "timing": "4 | 4 | 4 | 4",
+          "breaths_per_min": "3.8",
+          "description": "A longer pattern to relax your mind.",
+          "audio_url": "https://storage.googleapis.com/calm-ease/audio/bird-chirping-sound.mp3"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "1:1 Ratio",
+      "category_image": "https://storage.googleapis.com/calm-ease/image/834a1d87204e5fc161113ab4a21183c1.jpg",
+      "background_image": "https://storage.googleapis.com/calm-ease/image/peacful-image.jpg",
+      "exercises": [
+        {
+          "timing": "2 | 2 | 2 | 2",
+          "breaths_per_min": "6.0",
+          "description": "Balance your breathing with equal inhale and exhale.",
+          "audio_url": "https://storage.googleapis.com/calm-ease/audio/Calm-voice.mp3"
+        },
+        {
+          "timing": "3 | 3 | 3 | 3",
+          "breaths_per_min": "4.5",
+          "description": "A slower, calming breathing exercise.",
+          "audio_url": "https://storage.googleapis.com/calm-ease/audio/Calm-voice.mp3"
+        }
+      ]
+    }
+  ]
+}
