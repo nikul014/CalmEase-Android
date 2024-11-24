@@ -18,7 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.calmease.ui.screen.Meditation.highlightText
+import com.example.calmease.ui.screen.meditation.highlightText
 import com.example.calmease.viewmodel.Article
 
 @Composable

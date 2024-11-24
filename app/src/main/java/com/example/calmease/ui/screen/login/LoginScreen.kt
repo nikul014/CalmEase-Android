@@ -29,7 +29,7 @@ fun LoginScreen(
     val state = authViewModel.state.collectAsState().value
     LaunchedEffect(state) {
         if (state is AuthState.Success) {
-            navController.navigate("login") {
+            navController.navigate("dashboard") {
                 popUpTo("signup") { inclusive = true }
             }
         }

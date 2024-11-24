@@ -24,8 +24,6 @@ import com.example.calmease.R
 import com.example.calmease.ui.screen.meditation.MeditationDetailScreen
 import com.example.calmease.ui.screen.meditation.MeditationScreen
 import com.example.calmease.ui.screen.sessions.VideoActivity
-import com.example.calmease.ui.screen.Meditation.MeditationDetailScreen
-import com.example.calmease.ui.screen.Meditation.MeditationScreen
 import com.example.calmease.ui.screen.article.ArticleDetailScreen
 import com.example.calmease.ui.screen.article.ArticleScreen
 import com.example.calmease.ui.theme.CalmPrimaryDark
