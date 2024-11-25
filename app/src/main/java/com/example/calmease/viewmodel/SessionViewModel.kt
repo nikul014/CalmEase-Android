@@ -15,67 +15,19 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-//
-//class SessionViewModel(private val sessionRepository: SessionRepository) : ViewModel() {
-//
-//    val sessions = mutableStateOf<List<Session>>(emptyList())
-//    val createSessionResponse = mutableStateOf<Response<Unit>?>(null)
-//
-//    // To handle errors and show loading
-//    val isLoading = mutableStateOf(false)
-//    val errorMessage = mutableStateOf<String?>(null)
-//
-//    // Fetch sessions list from API
-//    fun fetchSessions(page: Int, pageSize: Int, searchTerm: String) {
-//        viewModelScope.launch {
-//            isLoading.value = true
-//            errorMessage.value = null
-//            val response = sessionRepository.getSessions(page, pageSize, searchTerm)
-//            if (response.isSuccessful) {
-//                sessions.value = response.body()?.data ?: emptyList()
-//            } else {
-//                errorMessage.value = "Failed to load sessions."
-//            }
-//            isLoading.value = false
-//        }
-//    }
-//
-//
-//    // Create a new session
-//    fun createSession(sessionRequest: SessionRequest) {
-//        viewModelScope.launch {
-//            isLoading.value = true
-//            errorMessage.value = null
-//            val response = sessionRepository.createSession(sessionRequest)
-//            createSessionResponse.value = response
-//            isLoading.value = false
-//        }
-//    }
-//
-//
-//    // Update an existing session
-//    fun updateSession(session: Session) {
-//        isLoading.value = true
-//        // Make the API call for updating a session
-//        viewModelScope.launch {
-//            try {
-//                val response = sessionRepository.updateSession(session) // API call
-//                if (response.isSuccessful) {
-//                    // Handle success, perhaps navigate back or show success
-//                } else {
-//                    errorMessage.value = "Failed to update session"
-//                }
-//            } catch (e: Exception) {
-//                errorMessage.value = "Error: ${e.localizedMessage}"
-//            } finally {
-//                isLoading.value = false
-//            }
-//        }
-//    }
-//}
-
 class SessionViewModel : ViewModel() {
 
+    // Callback for session creation and update
+    private var _onSessionCreated: ((SessionRequest) -> Unit)? = null
+    private var _onSessionUpdated: ((Session) -> Unit)? = null
+
+    fun setOnSessionCreatedCallback(callback: (SessionRequest) -> Unit) {
+        _onSessionCreated = callback
+    }
+
+    fun setOnSessionUpdatedCallback(callback: (Session) -> Unit) {
+        _onSessionUpdated = callback
+    }
     // Create an HttpLoggingInterceptor
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY // This will log the full body of the request/response
@@ -133,6 +85,9 @@ class SessionViewModel : ViewModel() {
                 val response = sessionService.createSession(sessionRequest)
                 if (response.isSuccessful) {
                     Log.d("SessionViewModel", "Create session response: ${response.body()}")
+                    response.body()?.let {
+                        _onSessionCreated?.invoke(sessionRequest) // Notify success with the created session
+                    }
                 } else {
                     Log.e("SessionViewModel", "Failed to create session: ${response.message()}")
                     _errorMessage.value = "Failed to create session"
@@ -155,7 +110,9 @@ class SessionViewModel : ViewModel() {
                 val response = sessionService.editSession(session)
                 if (response.isSuccessful) {
                     Log.d("SessionViewModel", "Update session response: ${response.body()}")
-                } else {
+                    response.body()?.let {
+                        _onSessionUpdated?.invoke(session) // Notify success with the created session
+                    } } else {
                     Log.e("SessionViewModel", "Failed to update session: ${response.message()}")
                     _errorMessage.value = "Failed to update session"
                 }

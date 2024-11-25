@@ -20,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 data class GoodMemory(
     val memoryId: Int,
     val title: String,
-    val memoryDateTime: String?,
+    val memory_date_time: String?,
     val description: String,
     val imageUrl: String,
     val userId: Int

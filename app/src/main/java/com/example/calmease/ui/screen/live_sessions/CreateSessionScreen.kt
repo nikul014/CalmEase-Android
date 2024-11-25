@@ -1,69 +1,54 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.calmease.ui.screen.live_sessions
 
 
-
-import androidx.compose.runtime.Composable
-
-import android.annotation.SuppressLint
-import android.net.Uri
-import androidx.compose.foundation.Image
+import android.app.TimePickerDialog
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.calmease.viewmodel.MeditationViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
-import com.example.calmease.viewmodel.Meditation
-import androidx.navigation.NavController
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.rounded.Description
+import androidx.compose.material.icons.rounded.Title
 import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextOverflow
-import com.example.calmease.R
-import com.example.calmease.network.CreateMemoryRequest
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.calmease.network.Session
 import com.example.calmease.network.SessionRequest
-import com.example.calmease.network.createMemory
-import com.example.calmease.viewmodel.GoodMemoriesViewModel
-import com.example.calmease.viewmodel.GoodMemory
+import com.example.calmease.ui.components.CustomTextField
+import com.example.calmease.ui.theme.CalmBackground
 import com.example.calmease.viewmodel.SessionViewModel
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import java.util.Calendar
+
 
 @Composable
 fun CreateSessionScreen(
     navController: NavController,
     sessionViewModel: SessionViewModel = viewModel(),
-    existingSessionJson: String? = null // This is passed when editing an existing session
+    existingSessionJson: String? = null
 ) {
     val isEditing = existingSessionJson != null
     val session = if (isEditing) {
-        // Parse the existing session if editing
         Gson().fromJson(existingSessionJson, Session::class.java)
     } else {
-        // Default empty session for creation
         Session(
             title = "",
             description = "",
@@ -83,94 +68,322 @@ fun CreateSessionScreen(
     val isLoading by sessionViewModel.isLoading.collectAsState()
     val errorMessage by sessionViewModel.errorMessage.collectAsState()
 
-    fun handleSaveSession() {
-        val sessionRequest = SessionRequest(
-            title = title,
-            description = description,
-            session_date = sessionDate,
-            session_time = sessionTime,
-            expert_id = "expert-123",
-            expert_email = "nikul@example.com",
-            duration = duration.toIntOrNull() ?: 15
-        )
-
-        val newSession = session.copy(
-            title = title,
-            description = description,
-            session_date = sessionDate,
-            session_time = sessionTime,
-            duration = duration.toInt(),
-            expert_id = "expert-123",
-            expert_email = "nikul@example.com",
-        )
-
-        if (isEditing) {
-            // Update the session
-            sessionViewModel.updateSession(newSession)
-        } else {
-            // Create a new session
-            sessionViewModel.createSession(sessionRequest)
-        }
+    // Register the success callbacks
+    sessionViewModel.setOnSessionCreatedCallback {
+        navController.navigate("session_list")
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = if (isEditing) "Edit Session" else "Create Session",
-            style = MaterialTheme.typography.headlineMedium
-        )
+    sessionViewModel.setOnSessionUpdatedCallback {
+        navController.navigate("session_list}")
+    }
 
-        // Input fields for the session details
-        OutlinedTextField(
-            value = title,
-            onValueChange = { title = it },
-            label = { Text("Title") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = description,
-            onValueChange = { description = it },
-            label = { Text("Description") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = sessionDate,
-            onValueChange = { sessionDate = it },
-            label = { Text("Session Date") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = sessionTime,
-            onValueChange = { sessionTime = it },
-            label = { Text("Session Time") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = duration,
-            onValueChange = { duration = it },
-            label = { Text("Duration (minutes)") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        // Button for save/create or update
-        Button(
-            onClick = { handleSaveSession() },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Text(text = if (isEditing) "Update Session" else "Create Session")
+            // Header
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = if (isEditing) "Edit Session" else "Create Session",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Add session details below.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Input Fields
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp)
+                ) {
+                    CustomTextField(
+                        value = title,
+                        onValueChange = { title = it },
+                        label = "Title",
+                        keyboardType = KeyboardType.Text,
+                        leadingIconId = Icons.Rounded.Title
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    CustomTextField(
+                        value = description,
+                        onValueChange = { description = it },
+                        label = "Description",
+                        keyboardType = KeyboardType.Text,
+                        leadingIconId = Icons.Rounded.Description
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Box(
+                        Modifier
+                            .padding(0.dp)
+                            .clickable {
+                                android.app
+                                    .DatePickerDialog(
+                                        context,
+                                        { _, year, month, dayOfMonth ->
+                                            sessionDate = "$dayOfMonth/${month + 1}/$year"
+                                        },
+                                        calendar.get(Calendar.YEAR),
+                                        calendar.get(Calendar.MONTH),
+                                        calendar.get(Calendar.DAY_OF_MONTH)
+                                    )
+                                    .show()
+                            }
+                    ) {
+
+                        Column(modifier = Modifier
+                            .padding(0.dp)
+                            .clickable {
+                                android.app
+                                    .DatePickerDialog(
+                                        context,
+                                        { _, year, month, dayOfMonth ->
+                                            sessionDate = "$dayOfMonth/${month + 1}/$year"
+                                        },
+                                        calendar.get(Calendar.YEAR),
+                                        calendar.get(Calendar.MONTH),
+                                        calendar.get(Calendar.DAY_OF_MONTH)
+                                    )
+                                    .show()
+                            }) {
+
+                            Text(
+                                text = "Session Date",
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(bottom = 8.dp) // Space between label and the card
+                            )
+
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(CalmBackground, shape = RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        android.app
+                                            .DatePickerDialog(
+                                                context,
+                                                { _, year, month, dayOfMonth ->
+                                                    sessionDate = "$dayOfMonth/${month + 1}/$year"
+                                                },
+                                                calendar.get(Calendar.YEAR),
+                                                calendar.get(Calendar.MONTH),
+                                                calendar.get(Calendar.DAY_OF_MONTH)
+                                            )
+                                            .show()
+                                    }
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.DateRange,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.padding(end = 8.dp)
+                                    )
+
+
+                                    Text(
+                                        text = sessionDate,
+                                        style = TextStyle(
+                                            color = if (sessionDate.isEmpty()) Color.Gray else Color.Black,
+                                            fontSize = 14.sp
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
+
+                    Box(
+                        Modifier
+                            .padding(0.dp)
+                            .clickable {
+                                TimePickerDialog(
+                                    context,
+                                    { _, hourOfDay, minute ->
+                                        sessionTime = String.format("%02d:%02d", hourOfDay, minute)
+                                    },
+                                    calendar.get(Calendar.HOUR_OF_DAY),
+                                    calendar.get(Calendar.MINUTE),
+                                    true
+                                ).show()
+                            }
+                    ) {
+
+                        Column(modifier = Modifier
+                            .padding(0.dp)
+                            .clickable {
+                                TimePickerDialog(
+                                    context,
+                                    { _, hourOfDay, minute ->
+                                        sessionTime = String.format("%02d:%02d", hourOfDay, minute)
+                                    },
+                                    calendar.get(Calendar.HOUR_OF_DAY),
+                                    calendar.get(Calendar.MINUTE),
+                                    true
+                                ).show()
+                            }) {
+
+                            Text(
+                                text = "Session Time",
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(bottom = 8.dp) // Space between label and the card
+                            )
+
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(CalmBackground, shape = RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        TimePickerDialog(
+                                            context,
+                                            { _, hourOfDay, minute ->
+                                                sessionTime = String.format("%02d:%02d", hourOfDay, minute)
+                                            },
+                                            calendar.get(Calendar.HOUR_OF_DAY),
+                                            calendar.get(Calendar.MINUTE),
+                                            true
+                                        ).show()
+                                    }
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.DateRange,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.padding(end = 8.dp)
+                                    )
+
+
+                                    Text(
+                                        text = sessionTime,
+                                        style = TextStyle(
+                                            color = if (sessionTime.isEmpty()) Color.Gray else Color.Black,
+                                            fontSize = 14.sp
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    CustomTextField(
+                        value = duration,
+                        onValueChange = { duration = it },
+                        label = "Duration (minutes)",
+                        keyboardType = KeyboardType.Number,
+                        leadingIconId = Icons.Filled.Lock
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Submit Button
+                    Button(
+                        onClick = {
+                            val sessionRequest = SessionRequest(
+                                title = title,
+                                description = description,
+                                session_date = sessionDate,
+                                session_time = sessionTime,
+                                expert_id = "expert-123",
+                                expert_email = "nikul@example.com",
+                                duration = duration.toIntOrNull() ?: 15
+                            )
+
+                            val newSession = session.copy(
+                                title = title,
+                                description = description,
+                                session_date = sessionDate,
+                                session_time = sessionTime,
+                                duration = duration.toInt(),
+                                expert_id = "expert-123",
+                                expert_email = "nikul@example.com",
+                            )
+
+                            if (isEditing) {
+                                // Update the session
+                                sessionViewModel.updateSession(newSession)
+                            } else {
+                                // Create a new session
+                                sessionViewModel.createSession(sessionRequest)
+                            }
+                        },
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        enabled = !isLoading
+                    ) {
+                        Text(
+                            text = if (isLoading) "Submitting..." else if (isEditing) "Update Session" else "Create Session",
+                            color = Color.White
+                        )
+                    }
+
+
+                    // Error Message
+                    if (errorMessage != null) {
+                        Text(
+                            text = errorMessage ?: "",
+                            color = Color.Red,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
+                }
+            }
         }
 
+        // Loading Indicator
         if (isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-        }
-
-        if (errorMessage != null) {
-            Text("Error: $errorMessage", color = Color.Red)
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
     }
 }

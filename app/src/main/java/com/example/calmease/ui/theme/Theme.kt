@@ -44,7 +44,7 @@ fun CalmEaseTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (useDarkTheme) DarkColors else LightColors
+    val colors = LightColors
 
 
     MaterialTheme(

@@ -28,6 +28,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -67,7 +68,10 @@ fun CustomTextField(
     leadingIconId: ImageVector?, // Optional parameter for leading icon
     keyboardType: KeyboardType = KeyboardType.Text,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+
+    readOnly: Boolean = false,
+    onClick: (() -> Unit)? = null
 ) {
 
     Column(modifier = Modifier.padding(0.dp)) {
@@ -84,7 +88,10 @@ fun CustomTextField(
             placeholder = { Text(text = label, style = TextStyle(color = Color.Gray)) },
             modifier = modifier
                 .fillMaxWidth()
-                .background(CalmBackground, shape = RoundedCornerShape(8.dp)),
+                .background(CalmBackground, shape = RoundedCornerShape(8.dp))
+                .clickable(enabled = onClick != null) { onClick?.invoke() },
+
+            readOnly = readOnly,
             leadingIcon = {
                 if (leadingIconId != null) {
                     Icon(

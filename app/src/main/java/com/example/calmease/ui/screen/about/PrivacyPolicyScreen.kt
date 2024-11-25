@@ -20,6 +20,7 @@ import com.example.calmease.viewmodel.Meditation
 import androidx.navigation.NavController
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
@@ -36,9 +37,75 @@ import com.google.gson.Gson
 
 @Composable
 fun PrivacyPolicyScreen() {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Privacy Policy", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("This is where we explain our privacy policy and how we handle user data.")
+
+    val scrollState = rememberScrollState()
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 24.dp, horizontal = 36.dp)
+                .verticalScroll(scrollState), // Make the column scrollable
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Privacy Policy",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // Wrap the Privacy Policy content in a clickable Card with rounded corners
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp, ), // Added horizontal padding for better spacing
+                shape = RoundedCornerShape(16.dp), // Rounded corners for the card
+                colors = CardDefaults.cardColors(containerColor = Color.White) // White background
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "1. Introduction\n" +
+                                "This Privacy Policy outlines how CalmEase collects, uses, and protects your personal information. By using the app, you agree to the terms outlined in this policy.\n\n" +
+                                "2. Information Collection\n" +
+                                "We collect personal information such as your name, email address, and usage data to provide and improve our services.\n\n" +
+                                "3. Use of Information\n" +
+                                "We use your personal information to provide personalized services, improve user experience, and communicate with you about app updates and offers.\n\n" +
+                                "4. Data Security\n" +
+                                "We implement security measures to protect your personal information from unauthorized access, alteration, or destruction.\n\n" +
+                                "5. Sharing of Information\n" +
+                                "We do not share your personal information with third parties unless required by law or with your consent.\n\n" +
+                                "6. Cookies\n" +
+                                "We use cookies to enhance the user experience and analyze app usage. You can manage your cookie preferences through your device settings.\n\n" +
+                                "7. Data Retention\n" +
+                                "We retain your personal information for as long as necessary to fulfill the purposes outlined in this policy.\n\n" +
+                                "8. User Rights\n" +
+                                "You have the right to access, correct, or delete your personal information. You can also opt-out of receiving marketing communications.\n\n" +
+                                "9. Changes to Privacy Policy\n" +
+                                "We may update this Privacy Policy from time to time. Any changes will be posted on this page, and the date of the last update will be provided.\n\n" +
+                                "10. Contact\n" +
+                                "If you have any questions or concerns about this Privacy Policy, please contact us at support@calmease.com.",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "© 2024 CalmEase. All rights reserved.",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                text = "The use of this app is subject to the terms outlined above. By using this app, you acknowledge and agree to comply with these terms.",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+        }
     }
 }

@@ -74,6 +74,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.calmease.CalmEaseApplication
 import com.example.calmease.ui.screen.about.AboutScreen
 import com.example.calmease.ui.screen.about.PrivacyPolicyScreen
 import com.example.calmease.ui.screen.about.TermsConditionsScreen
@@ -90,6 +91,7 @@ import com.example.calmease.ui.screen.memories.CreateMemoryScreen
 import com.example.calmease.ui.screen.memories.GoodMemoriesScreen
 import com.example.calmease.ui.screen.memories.MemoryDetailsScreen
 import com.example.calmease.ui.screen.more.MoreMenuScreen
+import com.example.calmease.ui.screen.profile.ProfileScreen
 import com.example.calmease.ui.theme.CalmBackground
 import com.example.calmease.ui.theme.CalmDarkBackground
 import com.example.calmease.ui.theme.CalmEaseTheme
@@ -114,7 +116,7 @@ fun DashboardScreen(parentNavController: NavController) {
         Column(modifier = Modifier.padding(paddingValues).background(color = CalmBackground)) {
             NavHost(
                 navController = navController,
-                startDestination = "meditation"
+                startDestination = "session_list"
             ) {
                 composable("meditation") {
                     MeditationScreen(viewModel = viewModel(), navController = navController)
@@ -205,7 +207,8 @@ fun DashboardScreen(parentNavController: NavController) {
                         }
                     }
 
-                    composable("profile") { ProfileScreen() }
+                    composable("profile") { CalmEaseApplication.sharedPreferenceHelper.getUser()
+                        ?.let { it1 -> ProfileScreen(it1) } }
                     composable("more") {
                         val context = LocalContext.current
                         MoreMenuScreen(navController = navController, context, parentNavController)
@@ -314,9 +317,4 @@ fun BottomNavigationBar(navController: NavController) {
             )
         }
     }
-}
-
-@Composable
-fun ProfileScreen() {
-    Text(text = "Profile Screen")
 }

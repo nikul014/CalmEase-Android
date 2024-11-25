@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calmease.enums.SharedPrefKeys
-import com.example.calmease.ui.screen.about.AboutScreen
 import com.example.calmease.ui.screen.breathing.BreathingCategoriesScreen
 import com.example.calmease.ui.screen.contact.ContactScreen
 import com.example.calmease.ui.screen.dashboard.DashboardScreen

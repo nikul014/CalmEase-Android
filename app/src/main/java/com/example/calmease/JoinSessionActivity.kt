@@ -7,8 +7,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -102,38 +103,32 @@ class JoinSessionActivity : AppCompatActivity() {
 
     private fun setupButtons() {
         if (role == "publisher") {
-            // Audio toggle button
-            val audioButton = findViewById<Button>(R.id.btn_audio_toggle)
-            audioButton.setOnClickListener {
 
+            val audioButton = findViewById<ImageView>(R.id.btn_audio_toggle)
+            audioButton.setOnClickListener {
                 if (isAudioMuted) {
                     mRtcEngine?.enableAudio()
-                    audioButton.text = "Mute Audio"
+                    audioButton.setImageResource(R.drawable.volume_enable)
                 } else {
                     mRtcEngine?.disableAudio()
-                    audioButton.text = "Unmute Audio"
+                    audioButton.setImageResource(R.drawable.volume_disable)
                 }
                 isAudioMuted = !isAudioMuted
-
             }
 
-            // Camera toggle button
-            val cameraButton = findViewById<Button>(R.id.btn_camera_toggle)
+            val cameraButton = findViewById<ImageView>(R.id.btn_camera_toggle)
             cameraButton.setOnClickListener {
                 if (isVideoMuted) {
                     mRtcEngine?.disableVideo()
-                    cameraButton.text = "Mute Camera"
+                    cameraButton.setImageResource(R.drawable.video_disable)
                 } else {
                     mRtcEngine?.enableVideo()
-                    cameraButton.text = "Unmute Camera"
+                    cameraButton.setImageResource(R.drawable.video_enable)
                 }
-
-                // Toggle the video state
                 isVideoMuted = !isVideoMuted
             }
 
-            // End call button
-            val endCallButton = findViewById<Button>(R.id.btn_end_call)
+            val endCallButton = findViewById<ImageView>(R.id.btn_end_call)
             endCallButton.setOnClickListener {
                 endCall()
             }
@@ -142,13 +137,7 @@ class JoinSessionActivity : AppCompatActivity() {
             val remoteView = findViewById<FrameLayout>(R.id.remote_video_view_container)
             remoteView.visibility = View.GONE
         } else {
-            // Leave session button for the subscriber
-            val leaveButton = findViewById<Button>(R.id.btn_leave_session)
-            leaveButton.setOnClickListener {
-//                leaveSession()
-            }
 
-            // Fullscreen remote view for the subscriber
             val container = findViewById<FrameLayout>(R.id.remote_video_view_container)
             val layoutParams = container.layoutParams
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -165,27 +154,26 @@ class JoinSessionActivity : AppCompatActivity() {
         try {
             mRtcEngine = RtcEngine.create(baseContext, appId, mRtcEventHandler)
         } catch (e: Exception) {
-            throw RuntimeException("Check the error.")
+            e.printStackTrace()
+            Toast.makeText(this, "Error initializing Agora engine.", Toast.LENGTH_LONG).show()
+            return
         }
 
         mRtcEngine?.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING)
 
         if (role == "publisher") {
             mRtcEngine?.setClientRole(Constants.CLIENT_ROLE_BROADCASTER)
+            mRtcEngine?.enableVideo()
+            val container = findViewById<FrameLayout>(R.id.local_video_view_container)
+            val surfaceView = RtcEngine.CreateRendererView(baseContext)
+            container.addView(surfaceView)
+            mRtcEngine?.setupLocalVideo(VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_FIT, 0))
         } else {
             mRtcEngine?.setClientRole(Constants.CLIENT_ROLE_AUDIENCE)
             mRtcEngine?.disableVideo()
             mRtcEngine?.disableAudio()
         }
 
-        if (role == "publisher") {
-            mRtcEngine?.enableVideo()
-        }
-
-        val container = findViewById<FrameLayout>(R.id.local_video_view_container)
-        val surfaceView = RtcEngine.CreateRendererView(baseContext)
-        container.addView(surfaceView)
-        mRtcEngine?.setupLocalVideo(VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_FIT, 0))
 
         mRtcEngine?.joinChannel(token, sessionId, "", userId)
     }

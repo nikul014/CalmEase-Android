@@ -103,7 +103,7 @@ fun SignupScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp),
+                    .padding(top = 16.dp),
                 shape = MaterialTheme.shapes.large.copy(
                     topStart = CornerSize(36.dp),
                     topEnd = CornerSize(36.dp),
