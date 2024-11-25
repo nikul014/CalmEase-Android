@@ -22,7 +22,6 @@ fun YoutubePlayer(
     AndroidView(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
             .clip(RoundedCornerShape(16.dp)),
         factory = { context ->
             YouTubePlayerView(context = context).apply {

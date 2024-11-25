@@ -31,7 +31,6 @@ fun FilterBoxAndSearch(
     onFilteredMeditationsChange: (List<Meditation>) -> Unit,
     expanded: Boolean,
     onExpandToggle: () -> Unit,
-    filterBoxHeight: Dp
 ) {
     var selectedVocal by remember { mutableStateOf("Vocals") }
     val vocalOptions = listOf("Vocals", "Female only", "Male only")
@@ -74,86 +73,90 @@ fun FilterBoxAndSearch(
     // Update filtered meditations in parent composable when the filters are applied
     onFilteredMeditationsChange(filteredMeditations)
 
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Color.LightGray)
-            .animateContentSize() // Smooth transition when expanding or collapsing
-    ) {
-        Button(
-            onClick = onExpandToggle,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = CalmPrimaryDark, // Purple background
-                contentColor = Color.White         // Text color
-            ),
-            modifier = Modifier.fillMaxWidth()
+    if(expanded) {
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .background(Color.LightGray)
+                .animateContentSize() // Smooth transition when expanding or collapsing
         ) {
-            Text(if (expanded) "Collapse Filter" else "Expand Filter")
-        }
-
-        // The filter section
-        AnimatedVisibility(visible = expanded) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp)
-                    .heightIn(min = filterBoxHeight) // Ensures the height is at least the minimum height when collapsed
+            Button(
+                onClick = onExpandToggle,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = CalmPrimaryDark, // Purple background
+                    contentColor = Color.White         // Text color
+                ),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                // Vocal Filter
-                FilterSection(
-                    title = "Vocal Filter",
-                    content = {
-                        DropdownFilter(
-                            selectedOption = selectedVocal,
-                            options = vocalOptions,
-                            onOptionSelected = { selectedVocal = it }
-                        )
-                    }
-                )
+                Text(if (expanded) "Collapse Filter" else "Expand Filter")
+            }
 
-                // Ratings Filter
-                FilterSection(
-                    title = "Ratings Filter",
-                    content = {
-                        RatingSlider(rating) { newRating -> rating = newRating }
-                    }
-                )
+            // The filter section
+            AnimatedVisibility(visible = expanded) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp)
 
-                // Session Time Filter
-                FilterSection(
-                    title = "Session Time Filter",
-                    content = {
-                        DropdownFilter(
-                            selectedOption = selectedSessionTime,
-                            options = sessionTimeOptions,
-                            onOptionSelected = { selectedSessionTime = it }
-                        )
-                    }
-                )
-
-                // Sort By Filter
-                FilterSection(
-                    title = "Sort By Filter",
-                    content = {
-                        DropdownFilter(
-                            selectedOption = selectedSortBy,
-                            options = sortByOptions,
-                            onOptionSelected = { selectedSortBy = it }
-                        )
-                    }
-                )
-
-                // Apply Button to trigger the filtering
-                Button(
-                    onClick = {
-                        applyFilters = true // Apply the filters when the button is clicked
-                    }, colors = ButtonDefaults.buttonColors(
-                        containerColor = CalmPrimaryDark, // Purple background
-                        contentColor = Color.White         // Text color
-                    ),
-                    modifier = Modifier.fillMaxWidth().padding(top = 32.dp)
                 ) {
-                    Text("Apply Filter")
+                    // Vocal Filter
+                    FilterSection(
+                        title = "Vocal Filter",
+                        content = {
+                            DropdownFilter(
+                                selectedOption = selectedVocal,
+                                options = vocalOptions,
+                                onOptionSelected = { selectedVocal = it }
+                            )
+                        }
+                    )
+
+                    // Ratings Filter
+                    FilterSection(
+                        title = "Ratings Filter",
+                        content = {
+                            RatingSlider(rating) { newRating -> rating = newRating }
+                        }
+                    )
+
+                    // Session Time Filter
+                    FilterSection(
+                        title = "Session Time Filter",
+                        content = {
+                            DropdownFilter(
+                                selectedOption = selectedSessionTime,
+                                options = sessionTimeOptions,
+                                onOptionSelected = { selectedSessionTime = it }
+                            )
+                        }
+                    )
+
+                    // Sort By Filter
+                    FilterSection(
+                        title = "Sort By Filter",
+                        content = {
+                            DropdownFilter(
+                                selectedOption = selectedSortBy,
+                                options = sortByOptions,
+                                onOptionSelected = { selectedSortBy = it }
+                            )
+                        }
+                    )
+
+                    // Apply Button to trigger the filtering
+                    Button(
+                        onClick = {
+                            applyFilters = true // Apply the filters when the button is clicked
+                        }, colors = ButtonDefaults.buttonColors(
+                            containerColor = CalmPrimaryDark, // Purple background
+                            contentColor = Color.White         // Text color
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 32.dp)
+                    ) {
+                        Text("Apply Filter")
+                    }
                 }
             }
         }

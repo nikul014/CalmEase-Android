@@ -63,6 +63,10 @@ dependencies {
 //    implementation(libs.androidx.material)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -103,6 +107,7 @@ dependencies {
     implementation(libs.coil.compose.v1)
     implementation(libs.chromecast.sender)
     implementation(libs.agora.rtc.sdk)
-
+    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2") // or latest version
+    implementation("androidx.compose.material:material-icons-extended:1.4.3")
 
 }

@@ -12,50 +12,43 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = CalmPrimaryDark,
-    secondary = CalmSecondaryDark,
-    tertiary = CalmTertiaryDark,
-    background = Color(0xFF1A1A1A),  // Dark Background for Comfort
-    surface = Color(0xFF2C2C2C),  // Dark Surface for Softer UI
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onTertiary = Color.Black,
-    onBackground = Color.White,
-    onSurface = Color.White
-)
 
-private val LightColorScheme = lightColorScheme(
+// Light Color Scheme
+val LightColors = lightColorScheme(
     primary = CalmPrimaryLight,
     secondary = CalmSecondaryLight,
     tertiary = CalmTertiaryLight,
-    background = Color(0xFFFAFAFA), // Light Background for Calm Vibes
-    surface = Color(0xFFFFFFFF),    // Light Surface
+    background = Color.White,
+    surface = Color.White,
     onPrimary = Color.Black,
     onSecondary = Color.Black,
-    onTertiary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black
+    onTertiary = Color.Black
 )
+
+// Dark Color Scheme
+val DarkColors = darkColorScheme(
+    primary = CalmPrimaryDark,
+    secondary = CalmSecondaryDark,
+    tertiary = CalmTertiaryDark,
+    background = Color.Black,
+    surface = Color.Black,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onTertiary = Color.White
+)
+
+
 
 @Composable
 fun CalmEaseTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+    val colors = if (useDarkTheme) DarkColors else LightColors
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = colors,
         typography = Typography,
         content = content
     )

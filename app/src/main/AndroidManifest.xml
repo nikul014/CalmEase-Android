@@ -10,7 +10,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
         android:name=".CalmEaseApplication"
         android:allowBackup="true"
@@ -23,6 +22,13 @@
         android:theme="@style/Theme.CalmEase"
         tools:targetApi="31">
         <activity
+            android:name=".JoinSessionActivity"
+            android:exported="false"
+            android:label="Session"
+            android:theme="@style/Theme.CalmEase" />
+
+
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
@@ -33,10 +39,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.example.calmease.ui.screen.sessions.VideoActivity" />
-
-
+        <activity android:name=".ui.screen.sessions.VideoActivity" />
     </application>
 
 </manifest>

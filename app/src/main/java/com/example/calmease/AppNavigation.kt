@@ -1,5 +1,6 @@
 package com.example.calmease
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -10,6 +11,7 @@ import com.example.calmease.ui.screen.about.AboutScreen
 import com.example.calmease.ui.screen.breathing.BreathingCategoriesScreen
 import com.example.calmease.ui.screen.contact.ContactScreen
 import com.example.calmease.ui.screen.dashboard.DashboardScreen
+import com.example.calmease.ui.screen.forgot_password.ForgotPasswordScreen
 import com.example.calmease.ui.screen.login.LoginScreen
 import com.example.calmease.ui.screen.signup.SignupScreen
 import com.example.calmease.viewmodel.BreathingViewModel
@@ -19,20 +21,23 @@ fun AppNavigation() {
     val navController = rememberNavController()
 
     val isLoggedIn =
-        CalmEaseApplication.sharedPreferenceHelper.get(SharedPrefKeys.TOKEN, "").isNotEmpty()
+        CalmEaseApplication.sharedPreferenceHelper.isLoggedIn()
 
-   // val startDestination = if (isLoggedIn) "dashboard" else "login"
+    Log.e("TAGSA","Login:"+isLoggedIn)
+     val startDestination = if (isLoggedIn) "dashboard" else "login"
 
-    NavHost(navController = navController, startDestination = "dashboard") {
+    NavHost(navController = navController, startDestination = "splash") {
+        composable("splash") {
+            SplashScreen(onSplashComplete = {
+                navController.navigate(startDestination) {
+                    popUpTo("splash") { inclusive = true }
+                }
+            })
+        }
         composable("login") { LoginScreen(navController) }
         composable("signup") { SignupScreen(navController) }
-        composable("dashboard") { DashboardScreen() }
-        composable("about") { AboutScreen(navController) }
-        composable("contact") { ContactScreen(navController) }
-        composable("breathing_categories") {
-            val viewModel: BreathingViewModel = viewModel()
-            BreathingCategoriesScreen(viewModel = viewModel, navController = navController)
-        }
+        composable("resetPassword") { ForgotPasswordScreen(navController) }
+        composable("dashboard") { DashboardScreen(navController) }
 
     }
 }

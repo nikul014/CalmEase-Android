@@ -8,13 +8,17 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -32,16 +36,15 @@ fun ArticleItem(article: Article, searchQuery: String = "", navController: NavCo
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(vertical = 8.dp)
+            .padding(vertical = 8.dp, horizontal = 16.dp) // Added horizontal padding for better spacing
             .clickable {
                 val articleId = article.Article_id
                 Log.d("ArticleDetail", "Article ID: $articleId")
                 navController.navigate("article_detail/$articleId")
 
             },
-        // Handle click event
-        elevation = CardDefaults.cardElevation(4.dp)
+        shape = RoundedCornerShape(16.dp), // Rounded corners for the card
+        colors = CardDefaults.cardColors(containerColor = Color.White) // White background
     ) {
         Column(
             modifier = Modifier
@@ -53,50 +56,40 @@ fun ArticleItem(article: Article, searchQuery: String = "", navController: NavCo
                 contentDescription = article.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp), // Fixed height for image
+                    .height(200.dp) .clip(RoundedCornerShape(16.dp)), // Apply rounded corners
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
 
-            // Title with or without search highlight
-            if (highlightTitle) {
-                Text(
-                    text = highlightText(article.title, searchQuery),  // Highlighted title
-                    style = MaterialTheme.typography.titleMedium
-                )
-            } else {
-                Text(
-                    text = article.title,  // Normal title
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
+            Spacer(modifier = Modifier.height(12.dp)) // Add space between image and text
 
-            Spacer(modifier = Modifier.height(8.dp))
+            // Title with search highlight if necessary
+            Text(
+                text = if (highlightTitle) highlightText(article.title, searchQuery).text else article.title,
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.fillMaxWidth(),
+                color = if (highlightTitle) MaterialTheme.colorScheme.primary else Color.Black
+            )
 
-            // Description with or without search highlight
-            if (highlightDescription) {
-                Text(
-                    text = highlightText(
-                        article.description,
-                        searchQuery
-                    ),  // Highlighted description
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            } else {
-                Text(
-                    text = article.description,  // Normal description
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+            Spacer(modifier = Modifier.height(4.dp)) // Space between title and description
 
-            Spacer(modifier = Modifier.height(8.dp))
+            // Description with search highlight if necessary
+            Text(
+                if (highlightDescription) highlightText(article.description, searchQuery).text else article.description,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray
+            )
 
+            Spacer(modifier = Modifier.height(6.dp)) // Space between description and duration
+
+            // Duration with a more visible style
             Text(
                 text = "by " + article.author,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
             )
+
         }
     }
 

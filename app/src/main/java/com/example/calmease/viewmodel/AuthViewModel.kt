@@ -1,6 +1,7 @@
 package com.example.calmease.viewmodel
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calmease.CalmEaseApplication
@@ -73,7 +74,13 @@ class AuthViewModel : ViewModel() {
                     if (loginResponse != null) {
                         val user = loginResponse.user
                         val token = loginResponse.token
+                        Log.e("TAGSA","This is user token"+loginResponse.token)
+                        Log.e("TAGSA","This is user details"+loginResponse.user.toString())
+                        Log.e("TAGSA","This is user email"+loginResponse.user.email)
                         sharedPreferenceHelper.saveUserData(user, token)
+                        Log.e("TAGSA","This is user logging "+sharedPreferenceHelper.isLoggedIn())
+                        Log.e("TAGSA","This is user logging "+sharedPreferenceHelper.getToken())
+
                     }
                     _state.value = AuthState.Success(response.body()?.message ?: "Login successful")
 

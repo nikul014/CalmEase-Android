@@ -1,11 +1,15 @@
 package com.example.calmease.ui.screen.breathing
 
 import android.media.MediaPlayer
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -53,8 +57,8 @@ fun BreathingDetailScreen(
                 model = categoryImage,
                 contentDescription = "Exercise Image",
                 modifier = Modifier
-                    .size(100.dp)
-                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .height(200.dp) .clip(RoundedCornerShape(16.dp)), // Apply rounded corners
             )
 
             // Timing breakdown display at the bottom
@@ -88,7 +92,7 @@ fun BreathingDetailScreen(
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text(text = if (isPlaying) "Stop" else "Start Exercise")
+                Text(text = if (isPlaying) "Stop" else "Start Exercise", color = Color.White)
             }
         }
     }
@@ -115,7 +119,7 @@ fun TimingCard(label: String, time: String) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().background(color = Color.White)
         ) {
             Text(text = label, style = MaterialTheme.typography.bodyMedium)
             Text(text = "$time s", style = MaterialTheme.typography.titleMedium)

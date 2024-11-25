@@ -2,6 +2,7 @@ package com.example.calmease.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.calmease.enums.SharedPrefKeys
 import com.example.calmease.network.User
 
@@ -59,13 +60,18 @@ class SharedPreferenceHelper private constructor(context: Context) {
 
 
     fun saveUserData(user: User, token: String) {
-        save(SharedPrefKeys.USER_ID, user.id)
-        save(SharedPrefKeys.USER_EMAIL, user.email)
-        save(SharedPrefKeys.USER_TYPE, user.userType)
-        save(SharedPrefKeys.CREATED_AT, user.createdAt)
-        save(SharedPrefKeys.UPDATED_AT, user.updatedAt)
-        save(SharedPrefKeys.TOKEN, token)
-        save(SharedPrefKeys.IS_LOGGED_IN, true)
+        try {
+            save(SharedPrefKeys.IS_LOGGED_IN, true)
+
+            save(SharedPrefKeys.USER_ID, user.id)
+            save(SharedPrefKeys.USER_EMAIL, user.email)
+            save(SharedPrefKeys.USER_TYPE, user.userType)
+            save(SharedPrefKeys.CREATED_AT, user.createdAt)
+            save(SharedPrefKeys.UPDATED_AT, user.updatedAt)
+            save(SharedPrefKeys.TOKEN, token)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            Log.e("TAGSA","Error occured saving user info:"+ex.stackTraceToString())}
     }
 
 

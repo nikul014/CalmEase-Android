@@ -2,18 +2,64 @@ package com.example.calmease.ui.screen.dashboard
 
 import android.content.Intent
 import android.util.Log
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntOffset
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.Article
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Mood
+import androidx.compose.material.icons.outlined.MoreHoriz
+import androidx.compose.material.icons.outlined.SelfImprovement
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -28,29 +74,44 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.calmease.ui.screen.Meditation.MeditationDetailScreen
-import com.example.calmease.ui.screen.Meditation.MeditationScreen
+import com.example.calmease.ui.screen.about.AboutScreen
+import com.example.calmease.ui.screen.about.PrivacyPolicyScreen
+import com.example.calmease.ui.screen.about.TermsConditionsScreen
 import com.example.calmease.ui.screen.article.ArticleDetailScreen
 import com.example.calmease.ui.screen.article.ArticleScreen
 import com.example.calmease.ui.screen.breathing.BreathingCategoriesScreen
 import com.example.calmease.ui.screen.breathing.BreathingDetailScreen
 import com.example.calmease.ui.screen.breathing.BreathingExercisesScreen
+import com.example.calmease.ui.screen.contact.ContactScreen
+import com.example.calmease.ui.screen.live_sessions.CreateSessionScreen
+import com.example.calmease.ui.screen.live_sessions.LiveSessionListScreen
+import com.example.calmease.ui.screen.live_sessions.SessionDetailScreen
+import com.example.calmease.ui.screen.memories.CreateMemoryScreen
+import com.example.calmease.ui.screen.memories.GoodMemoriesScreen
+import com.example.calmease.ui.screen.memories.MemoryDetailsScreen
+import com.example.calmease.ui.screen.more.MoreMenuScreen
+import com.example.calmease.ui.theme.CalmBackground
+import com.example.calmease.ui.theme.CalmDarkBackground
+import com.example.calmease.ui.theme.CalmEaseTheme
 import com.example.calmease.viewmodel.BreathingViewModel
 import com.example.calmease.ui.theme.CalmPrimaryDark
+import com.example.calmease.viewmodel.SessionViewModel
 
 @Composable
-fun DashboardScreen() {
+fun DashboardScreen(parentNavController: NavController) {
     val navController = rememberNavController()
 
     val bottomNavItems = listOf("Meditation", "Breathing", "Articles", "Profile", "More")
-    val currentScreen = remember { mutableStateOf(bottomNavItems[0]) }
+    val selectedIndex by remember { mutableIntStateOf(0) }
+
 
     Scaffold(
+        containerColor = CalmBackground,
         bottomBar = {
             BottomNavigationBar(navController = navController)
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
+        Column(modifier = Modifier.padding(paddingValues).background(color = CalmBackground)) {
             NavHost(
                 navController = navController,
                 startDestination = "meditation"
@@ -89,123 +150,173 @@ fun DashboardScreen() {
                     val exerciseTiming = backStackEntry.arguments?.getString("exerciseTiming") ?: ""
                     val audioUrl = backStackEntry.arguments?.getString("audioUrl") ?: ""
 
-                    BreathingDetailScreen(
-                        categoryImage = categoryImage,
-                        backgroundImage = backgroundImage,
-                        exerciseTiming = exerciseTiming,
-                        audioUrl = audioUrl,
-                        navController = navController
-                    )
-                }
+                        BreathingDetailScreen(
+                            categoryImage = categoryImage,
+                            backgroundImage = backgroundImage,
+                            exerciseTiming = exerciseTiming,
+                            audioUrl = audioUrl,
+                            navController = navController
+                        )
+                    }
 
-                composable("memories") { val context = LocalContext.current
-                    LaunchedEffect(Unit) {
-                        val intent = Intent(context, VideoActivity::class.java).apply {
-                            putExtra("ChannelName", "2")
-                            putExtra("UserRole", "publisher")
+                    composable("create_memory") {
+                        CreateMemoryScreen(navController = navController)
+                    }
+
+                    composable("memory_detail/{memoryJson}") { backStackEntry ->
+                        val memoryJson = backStackEntry.arguments?.getString("memoryJson") ?: ""
+                        MemoryDetailsScreen(memoryJson = memoryJson, navController = navController)
+                    }
+
+                    composable("memories") {
+                        GoodMemoriesScreen(navController = navController)
+                    }
+
+                    composable("session_list") {
+                        LiveSessionListScreen(navController)
+                    }
+                    composable("session_detail/{sessionJson}") { backStackEntry ->
+                        val sessionJson = backStackEntry.arguments?.getString("sessionJson") ?: ""
+                        SessionDetailScreen(navController, sessionJson)
+                    }
+                    composable("create_session") {
+                        CreateSessionScreen(navController)
+                    }
+
+                    composable("edit_session/{sessionJson}") { backStackEntry ->
+                        val sessionJson = backStackEntry.arguments?.getString("sessionJson")
+                        sessionJson?.let {
+                            CreateSessionScreen(navController, existingSessionJson = it)
                         }
-                        ContextCompat.startActivity(context, intent, null)
-                    } }
-                composable("articles") { ArticleScreen(viewModel = viewModel(),navController = navController) }
-                composable("article_detail/{articleId}") { backStackEntry ->
-                    val articleIdString = backStackEntry.arguments?.getString("articleId")
-                    val articleId = articleIdString?.toIntOrNull()
-                    Log.d("ArticleDetail", "Article ID: $articleId")
-                    if (articleId != null) {
-                        ArticleDetailScreen(articleId = articleId)
+                    }
+
+                    composable("articles") {
+                        ArticleScreen(
+                            viewModel = viewModel(),
+                            navController = navController
+                        )
+                    }
+                    composable("article_detail/{articleId}") { backStackEntry ->
+                        val articleIdString = backStackEntry.arguments?.getString("articleId")
+                        val articleId = articleIdString?.toIntOrNull()
+                        Log.d("ArticleDetail", "Article ID: $articleId")
+                        if (articleId != null) {
+                            ArticleDetailScreen(articleId = articleId)
+                        }
+                    }
+
+                    composable("profile") { ProfileScreen() }
+                    composable("more") {
+                        val context = LocalContext.current
+                        MoreMenuScreen(navController = navController, context, parentNavController)
+                    }
+                    composable("contact") { ContactScreen(navController) }
+
+                    composable("about_us") {
+                        AboutScreen(navController = navController)
+                    }
+                    composable("terms_conditions") {
+                        TermsConditionsScreen()
+                    }
+                    composable("privacy_policy") {
+                        PrivacyPolicyScreen()
                     }
                 }
-                composable("profile") { ProfileScreen() }
-                composable("more") { MoreScreen() }
             }
         }
-    }
+
 }
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val currentRoute = navController.currentBackStackEntryAsState()?.value?.destination?.route
-    NavigationBar(
-        modifier = Modifier.fillMaxWidth()
+
+    // Wrapping NavigationBar in a Box to add background and rounded corners
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 8.dp,
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                clip = false // Set to true if you want to clip the content within the shape
+            )
+            .background(Color.White, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+            .padding(4.dp) // Optional padding for better spacing
     ) {
-        NavigationBarItem(
-            selected = currentRoute == "meditation",
-            onClick = { navController.navigate("meditation") },
-            label = { Text("Meditation") },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_meditate_name),
-                    contentDescription = "Meditation Icon"
+        NavigationBar(
+            modifier = Modifier.fillMaxWidth(),
+            containerColor = Color.Transparent // Ensure the bar itself has a white background
+        ) {
+            NavigationBarItem(
+                selected = currentRoute == "meditation",
+                onClick = { navController.navigate("meditation") },
+                label = { Text("Meditation") },
+                icon = { Icon(imageVector = Icons.Outlined.SelfImprovement, contentDescription = null) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color.White,
+                    selectedTextColor = CalmPrimaryDark,
+                    indicatorColor = CalmPrimaryDark,
+                    unselectedIconColor = CalmDarkBackground,
+                    unselectedTextColor = CalmDarkBackground
                 )
-            },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,
-                selectedTextColor = CalmPrimaryDark,
-                indicatorColor = CalmPrimaryDark,
-                unselectedIconColor = Color.Gray,
-                unselectedTextColor = Color.Gray
             )
-        )
-        NavigationBarItem(
-            selected = currentRoute == "breathing",
-            onClick = { navController.navigate("breathing") },
-            label = { Text("Breathing") },
-            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,
-                selectedTextColor = CalmPrimaryDark,
-                indicatorColor = CalmPrimaryDark,
+            NavigationBarItem(
+                selected = currentRoute == "breathing",
+                onClick = { navController.navigate("breathing") },
+                label = { Text("Breathing") },
+                icon = { Icon(imageVector = Icons.Outlined.Favorite, contentDescription = null) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color.White,
+                    selectedTextColor = CalmPrimaryDark,
+                    indicatorColor = CalmPrimaryDark,
+                    unselectedIconColor = CalmDarkBackground,
+                    unselectedTextColor = CalmDarkBackground
+                )
             )
-        )
-
-        NavigationBarItem(
-            selected = currentRoute == "articles",
-            onClick = { navController.navigate("articles") },
-            label = { Text("Articles") },
-            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,
-                selectedTextColor = CalmPrimaryDark,
-                indicatorColor = CalmPrimaryDark,
+            NavigationBarItem(
+                selected = currentRoute == "articles",
+                onClick = { navController.navigate("articles") },
+                label = { Text("Articles") },
+                icon = { Icon(imageVector = Icons.Outlined.Article, contentDescription = null) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color.White,
+                    selectedTextColor = CalmPrimaryDark,
+                    indicatorColor = CalmPrimaryDark,
+                    unselectedIconColor = CalmDarkBackground,
+                    unselectedTextColor = CalmDarkBackground
+                )
             )
-        )
-
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate("memories") },
-            label = { Text("Good Memories") },
-            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate("more") },
-            label = { Text("More") },
-            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) }
-        )
+            NavigationBarItem(
+                selected = currentRoute == "memories",
+                onClick = { navController.navigate("memories") },
+                label = { Text("Memories") },
+                icon = { Icon(imageVector = Icons.Outlined.Mood, contentDescription = null) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color.White,
+                    selectedTextColor = CalmPrimaryDark,
+                    indicatorColor = CalmPrimaryDark,
+                    unselectedIconColor = CalmDarkBackground,
+                    unselectedTextColor = CalmDarkBackground
+                )
+            )
+            NavigationBarItem(
+                selected = currentRoute == "more",
+                onClick = { navController.navigate("more") },
+                label = { Text("More") },
+                icon = { Icon(imageVector = Icons.Outlined.MoreHoriz, contentDescription = null) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color.White,
+                    selectedTextColor = CalmPrimaryDark,
+                    indicatorColor = CalmPrimaryDark,
+                    unselectedIconColor = CalmDarkBackground,
+                    unselectedTextColor = CalmDarkBackground
+                )
+            )
+        }
     }
 }
 
 @Composable
 fun ProfileScreen() {
     Text(text = "Profile Screen")
-}
-@Composable
-fun MemoriesScreen(channelName: String, userRole: String) {
-    val context = LocalContext.current
-
-    Button(onClick = {
-        val intent = Intent(context, VideoActivity::class.java).apply {
-            putExtra("ChannelName", channelName)
-            putExtra("UserRole", userRole)
-        }
-        ContextCompat.startActivity(context, intent, null)
-    }) {
-        Text("Start Video Activity")
-    }
-}
-
-
-@Composable
-fun MoreScreen() {
-    Text(text = "More Screen")
 }

@@ -1,6 +1,10 @@
 package com.example.calmease.ui.screen.contact
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,7 +40,9 @@ fun ContactScreen(navController: NavController, contactViewModel: ContactViewMod
         CustomTextField(
             value = userName,
             onValueChange = contactViewModel::onUserNameChange,
-            label = "Name"
+            label = "Name",
+            leadingIconId = Icons.Default.Person
+
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -44,7 +50,9 @@ fun ContactScreen(navController: NavController, contactViewModel: ContactViewMod
         CustomTextField(
             value = userEmail,
             onValueChange = contactViewModel::onUserEmailChange,
-            label = "Email"
+            label = "Email",
+            leadingIconId = Icons.Default.Email
+
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -53,7 +61,9 @@ fun ContactScreen(navController: NavController, contactViewModel: ContactViewMod
             value = message,
             onValueChange = contactViewModel::onMessageChange,
             label = "Message",
-            modifier = Modifier.height(150.dp)
+            leadingIconId = Icons.Default.Info
+,
+                    modifier = Modifier.height(150.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))

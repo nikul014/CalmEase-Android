@@ -9,18 +9,27 @@ import androidx.compose.ui.text.withStyle
 
 @Composable
 fun highlightText(text: String, query: String): AnnotatedString {
-    // Creating an AnnotatedString with highlighted query matches
-    val startIndex = text.indexOf(query, ignoreCase = true)
-    return if (startIndex != -1) {
-        val annotatedString = buildAnnotatedString {
-            append(text.substring(0, startIndex))
-            withStyle(style = SpanStyle(color = Color.Yellow)) { // Highlight color
-                append(text.substring(startIndex, startIndex + query.length))
+    val annotatedString = buildAnnotatedString {
+        var startIndex = 0
+        // Loop through all occurrences of the query
+        while (startIndex < text.length) {
+            // Find the next occurrence of the query (case-insensitive)
+            val index = text.indexOf(query, startIndex, ignoreCase = true)
+            if (index != -1) {
+                // Append text before the match
+                append(text.substring(startIndex, index))
+                // Highlight the match
+                withStyle(style = SpanStyle(color = Color.Yellow)) {
+                    append(text.substring(index, index + query.length))
+                }
+                // Move startIndex past the current match
+                startIndex = index + query.length
+            } else {
+                // No more matches, just append the remaining text
+                append(text.substring(startIndex))
+                break
             }
-            append(text.substring(startIndex + query.length))
         }
-        annotatedString
-    } else {
-        AnnotatedString(text) // No match found, return the plain text
     }
+    return annotatedString
 }
