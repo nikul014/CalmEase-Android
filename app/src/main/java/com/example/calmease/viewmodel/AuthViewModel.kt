@@ -110,11 +110,13 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             _state.value = AuthState.Loading
             try {
+                val userType = if (email.value.startsWith("nikul", ignoreCase = true)) "expert" else "user"
                 val request = SignupRequest(
                     fullName.value,
                     email.value,
                     password.value,
-                    confirmPassword.value
+                    confirmPassword.value,
+                    userType
                 )
 
                 val response = authService.signup(request)

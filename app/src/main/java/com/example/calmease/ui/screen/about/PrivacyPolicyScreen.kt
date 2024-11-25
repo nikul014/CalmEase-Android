@@ -32,7 +32,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.rememberImagePainter
 import com.example.calmease.R
 import com.example.calmease.viewmodel.GoodMemoriesViewModel
-import com.example.calmease.viewmodel.GoodMemory
 import com.google.gson.Gson
 
 @Composable

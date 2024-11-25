@@ -103,9 +103,7 @@ import com.example.calmease.viewmodel.SessionViewModel
 fun DashboardScreen(parentNavController: NavController) {
     val navController = rememberNavController()
 
-    val bottomNavItems = listOf("Meditation", "Breathing", "Articles", "Profile", "More")
-    val selectedIndex by remember { mutableIntStateOf(0) }
-
+    Log.e("TAGSA","this is user ${CalmEaseApplication.sharedPreferenceHelper.getUser()?.id} and this is user type:${CalmEaseApplication.sharedPreferenceHelper.getUserType()}")
 
     Scaffold(
         containerColor = CalmBackground,
@@ -116,7 +114,7 @@ fun DashboardScreen(parentNavController: NavController) {
         Column(modifier = Modifier.padding(paddingValues).background(color = CalmBackground)) {
             NavHost(
                 navController = navController,
-                startDestination = "session_list"
+                startDestination = "meditation"
             ) {
                 composable("meditation") {
                     MeditationScreen(viewModel = viewModel(), navController = navController)

@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import com.example.calmease.CalmEaseApplication
 import com.example.calmease.R
 import com.example.calmease.network.CreateMemoryRequest
 import com.example.calmease.network.Session
@@ -45,7 +46,6 @@ import com.example.calmease.network.SessionRequest
 import com.example.calmease.network.createMemory
 import com.example.calmease.ui.screen.memories.GoodMemoryItem
 import com.example.calmease.viewmodel.GoodMemoriesViewModel
-import com.example.calmease.viewmodel.GoodMemory
 import com.example.calmease.viewmodel.SessionViewModel
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -68,6 +68,10 @@ fun LiveSessionListScreen(
     val isLoading by sessionViewModel.isLoading.collectAsState()
     val errorMessage by sessionViewModel.errorMessage.collectAsState()
 
+    val userId = CalmEaseApplication.sharedPreferenceHelper.getUser()?.id
+    val userEmail = CalmEaseApplication.sharedPreferenceHelper.getUser()?.email
+    val userType = CalmEaseApplication.sharedPreferenceHelper.getUserType()
+
     // Automatically fetch sessions when the screen is launched
     LaunchedEffect(Unit) {
         sessionViewModel.fetchSessions(1, 5, "Morning")
@@ -78,7 +82,9 @@ fun LiveSessionListScreen(
         contentAlignment = Alignment.BottomEnd
     ) {
 
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)) {
             if (isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             } else if (errorMessage != null) {
@@ -96,29 +102,31 @@ fun LiveSessionListScreen(
         }
 
 
-        ExtendedFloatingActionButton(
-            onClick = { navController.navigate("create_session") },
-            modifier = Modifier
-                .padding(24.dp),
-            containerColor = MaterialTheme.colorScheme.primary
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Add, // Smiley face icon
-                contentDescription = "Create Memory",
-                tint = Color.White
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(
-                text = "Create Session",
-
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                ),
-
+        if(userType == "expert") {
+            ExtendedFloatingActionButton(
+                onClick = { navController.navigate("create_session") },
+                modifier = Modifier
+                    .padding(24.dp),
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Add, // Smiley face icon
+                    contentDescription = "Create Memory",
+                    tint = Color.White
                 )
+                Spacer(modifier = Modifier.width(8.dp))
 
+                Text(
+                    text = "Create Session",
+
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    ),
+
+                    )
+
+            }
         }
     }
 

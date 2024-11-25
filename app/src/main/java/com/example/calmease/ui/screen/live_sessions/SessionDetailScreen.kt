@@ -44,6 +44,11 @@ fun SessionDetailScreen(navController: NavController, sessionJson: String) {
     val session = Gson().fromJson(sessionJson, Session::class.java)
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val userId = CalmEaseApplication.sharedPreferenceHelper.getUser()?.id
+    val userEmail = CalmEaseApplication.sharedPreferenceHelper.getUser()?.email
+    val userType = CalmEaseApplication.sharedPreferenceHelper.getUserType()
+
+    val isExpert = userId?.toString() == session.expert_id
 
     Column(
         modifier = Modifier
@@ -61,19 +66,23 @@ fun SessionDetailScreen(navController: NavController, sessionJson: String) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
-
-            Button(
-                onClick = {
-                    navController.navigate("edit_session/${sessionJson}")
-                },
-                modifier = Modifier.weight(1f),
-                shape = RoundedCornerShape(50),
-                contentPadding = PaddingValues(vertical = 12.dp)
-            ) {
-                Text("Edit Session", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+            if (userType == "expert") {
+                Button(
+                    onClick = {
+                        navController.navigate("edit_session/${sessionJson}")
+                    },
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(50),
+                    contentPadding = PaddingValues(vertical = 12.dp)
+                ) {
+                    Text(
+                        "Edit Session",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color.White
+                    )
+                }
             }
-
             Button(
                 onClick = {
 

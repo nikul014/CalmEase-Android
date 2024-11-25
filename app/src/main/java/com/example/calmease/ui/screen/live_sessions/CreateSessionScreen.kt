@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.calmease.CalmEaseApplication
 import com.example.calmease.network.Session
 import com.example.calmease.network.SessionRequest
 import com.example.calmease.ui.components.CustomTextField
@@ -45,6 +46,11 @@ fun CreateSessionScreen(
     sessionViewModel: SessionViewModel = viewModel(),
     existingSessionJson: String? = null
 ) {
+
+    val userId = CalmEaseApplication.sharedPreferenceHelper.getUser()?.id
+    val userEmail = CalmEaseApplication.sharedPreferenceHelper.getUser()?.email
+    val userType = CalmEaseApplication.sharedPreferenceHelper.getUserType()
+
     val isEditing = existingSessionJson != null
     val session = if (isEditing) {
         Gson().fromJson(existingSessionJson, Session::class.java)
@@ -55,10 +61,12 @@ fun CreateSessionScreen(
             session_date = "",
             session_time = "",
             duration = 0,
-            expert_id = "expert-123",
-            expert_email = "nikul@example.com"
+            expert_id = userId?.toString() ?: "",
+            expert_email = userEmail ?: ""
         )
     }
+
+    val isExpert = userId?.toString() == session.expert_id
 
     var title by remember { mutableStateOf(session.title) }
     var description by remember { mutableStateOf(session.description) }
@@ -278,7 +286,8 @@ fun CreateSessionScreen(
                                         TimePickerDialog(
                                             context,
                                             { _, hourOfDay, minute ->
-                                                sessionTime = String.format("%02d:%02d", hourOfDay, minute)
+                                                sessionTime =
+                                                    String.format("%02d:%02d", hourOfDay, minute)
                                             },
                                             calendar.get(Calendar.HOUR_OF_DAY),
                                             calendar.get(Calendar.MINUTE),

@@ -58,7 +58,6 @@ class SharedPreferenceHelper private constructor(context: Context) {
     }
 
 
-
     fun saveUserData(user: User, token: String) {
         try {
             save(SharedPrefKeys.IS_LOGGED_IN, true)
@@ -71,7 +70,8 @@ class SharedPreferenceHelper private constructor(context: Context) {
             save(SharedPrefKeys.TOKEN, token)
         } catch (ex: Exception) {
             ex.printStackTrace()
-            Log.e("TAGSA","Error occured saving user info:"+ex.stackTraceToString())}
+            Log.e("TAGSA", "Error occured saving user info:" + ex.stackTraceToString())
+        }
     }
 
 
@@ -93,10 +93,13 @@ class SharedPreferenceHelper private constructor(context: Context) {
         return get(SharedPrefKeys.TOKEN, "")
     }
 
+    fun getUserType(): String? {
+        return get(SharedPrefKeys.USER_TYPE, "")
+    }
+
     fun isLoggedIn(): Boolean {
         return get(SharedPrefKeys.IS_LOGGED_IN, false)
     }
-
 
 
     fun clearUserData() {
