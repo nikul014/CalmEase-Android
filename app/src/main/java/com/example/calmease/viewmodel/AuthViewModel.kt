@@ -6,10 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calmease.CalmEaseApplication
 import com.example.calmease.network.AuthService
+import com.example.calmease.network.ErrorResponse
 import com.example.calmease.network.LoginRequest
 import com.example.calmease.network.SignupRequest
 import com.example.calmease.network.ForgotPasswordRequest
 import com.example.calmease.network.NetworkModule
+import com.example.calmease.network.ResetPasswordRequest
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -74,20 +77,24 @@ class AuthViewModel : ViewModel() {
                     if (loginResponse != null) {
                         val user = loginResponse.user
                         val token = loginResponse.token
-                        Log.e("TAGSA","This is user token"+loginResponse.token)
-                        Log.e("TAGSA","This is user details"+loginResponse.user.toString())
-                        Log.e("TAGSA","This is user email"+loginResponse.user.email)
                         sharedPreferenceHelper.saveUserData(user, token)
-                        Log.e("TAGSA","This is user logging "+sharedPreferenceHelper.isLoggedIn())
-                        Log.e("TAGSA","This is user logging "+sharedPreferenceHelper.getToken())
-
                     }
                     _state.value = AuthState.Success(response.body()?.message ?: "Login successful")
 
                 } else {
-                    _state.value = AuthState.Error(response.message())
+                    // If the response is not successful, try to handle the error response format
+                    try {
+                        // Attempt to parse the error response as a generic error
+                        val errorResponse = Gson().fromJson(response.errorBody()?.charStream(), ErrorResponse::class.java)
+                        _state.value = AuthState.Error(errorResponse.error ?: "Unknown error")
+                    } catch (e: Exception) {
+                        // If parsing fails, show a generic error message
+                        _state.value = AuthState.Error("An unknown error occurred")
+                    }
                 }
             } catch (e: Exception) {
+                Log.e("TAGSA","This is user error "+e)
+
                 _state.value = AuthState.Error("Network error: ${e.localizedMessage}")
             }
         }
@@ -124,7 +131,14 @@ class AuthViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     _state.value = AuthState.Success("Signup successful!")
                 } else {
-                    _state.value = AuthState.Error("Error: ${response.message()}")
+                    try {
+                        // Attempt to parse the error response as a generic error
+                        val errorResponse = Gson().fromJson(response.errorBody()?.charStream(), ErrorResponse::class.java)
+                        _state.value = AuthState.Error(errorResponse.error ?: "Unknown error")
+                    } catch (e: Exception) {
+                        // If parsing fails, show a generic error message
+                        _state.value = AuthState.Error("An unknown error occurred")
+                    }
                 }
             } catch (e: Exception) {
                 _state.value = AuthState.Error("Network error: ${e.localizedMessage}")
@@ -141,11 +155,20 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             _state.value = AuthState.Loading
             try {
-                val response = authService.forgotPassword(ForgotPasswordRequest(email.value))
+                val response = authService.resetPassword(ResetPasswordRequest(email.value))
                 if (response.isSuccessful) {
-                    _state.value = AuthState.Success(response.body()?.message ?: "Reset link sent")
+                    // Successful password reset
+                    _state.value = AuthState.Success(response.body()?.message ?: "Password reset successfully.")
                 } else {
-                    _state.value = AuthState.Error(response.message())
+                    // If the response is not successful, try to handle the error response format
+                    try {
+                        // Attempt to parse the error response as a generic error
+                        val errorResponse = Gson().fromJson(response.errorBody()?.charStream(), ErrorResponse::class.java)
+                        _state.value = AuthState.Error(errorResponse.error ?: "Unknown error")
+                    } catch (e: Exception) {
+                        // If parsing fails, show a generic error message
+                        _state.value = AuthState.Error("An unknown error occurred")
+                    }
                 }
             } catch (e: Exception) {
                 _state.value = AuthState.Error("Network error: ${e.localizedMessage}")

@@ -143,7 +143,7 @@ fun ForgotPasswordScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // State Handling
+                        // Handle different states: Loading, Success, Error
                         when (state) {
                             is AuthState.Loading -> CircularProgressIndicator()
                             is AuthState.Success -> Text(
@@ -151,13 +151,11 @@ fun ForgotPasswordScreen(
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.bodyMedium
                             )
-
                             is AuthState.Error -> Text(
                                 text = state.message,
                                 color = MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.bodyMedium
                             )
-
                             else -> {}
                         }
 

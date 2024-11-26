@@ -30,6 +30,11 @@ data class SignupResponse(
     val message: String
 )
 
+data class ErrorResponse(
+    val error: String? = null
+)
+
+
 // LoginResponse model to represent the login API response
 data class LoginResponse(
     val message: String,
@@ -45,4 +50,12 @@ interface AuthService {
 
     @POST("api/auth/forgot-password")
     suspend fun forgotPassword(@Body request: ForgotPasswordRequest): Response<AuthResponse>
+
+    @POST("api/auth/reset-password")
+    suspend fun resetPassword(@Body request: ResetPasswordRequest): Response<AuthResponse>
+
 }
+
+data class ResetPasswordRequest(
+    val email: String
+)
