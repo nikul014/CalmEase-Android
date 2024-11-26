@@ -37,7 +37,9 @@ import com.example.calmease.ui.components.CustomTextField
 import com.example.calmease.ui.theme.CalmBackground
 import com.example.calmease.viewmodel.SessionViewModel
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 
 @Composable
@@ -161,7 +163,7 @@ fun CreateSessionScreen(
                                     .DatePickerDialog(
                                         context,
                                         { _, year, month, dayOfMonth ->
-                                            sessionDate = "$dayOfMonth/${month + 1}/$year"
+                                            sessionDate = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth)
                                         },
                                         calendar.get(Calendar.YEAR),
                                         calendar.get(Calendar.MONTH),
@@ -178,7 +180,7 @@ fun CreateSessionScreen(
                                     .DatePickerDialog(
                                         context,
                                         { _, year, month, dayOfMonth ->
-                                            sessionDate = "$dayOfMonth/${month + 1}/$year"
+                                            sessionDate = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth)
                                         },
                                         calendar.get(Calendar.YEAR),
                                         calendar.get(Calendar.MONTH),
@@ -203,7 +205,7 @@ fun CreateSessionScreen(
                                             .DatePickerDialog(
                                                 context,
                                                 { _, year, month, dayOfMonth ->
-                                                    sessionDate = "$dayOfMonth/${month + 1}/$year"
+                                                    sessionDate = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth)
                                                 },
                                                 calendar.get(Calendar.YEAR),
                                                 calendar.get(Calendar.MONTH),
@@ -248,7 +250,8 @@ fun CreateSessionScreen(
                                 TimePickerDialog(
                                     context,
                                     { _, hourOfDay, minute ->
-                                        sessionTime = String.format("%02d:%02d", hourOfDay, minute)
+                                        sessionTime = String.format("%02d:%02d:%02d", hourOfDay, minute, 0) // Include seconds as "00"
+
                                     },
                                     calendar.get(Calendar.HOUR_OF_DAY),
                                     calendar.get(Calendar.MINUTE),
@@ -263,7 +266,8 @@ fun CreateSessionScreen(
                                 TimePickerDialog(
                                     context,
                                     { _, hourOfDay, minute ->
-                                        sessionTime = String.format("%02d:%02d", hourOfDay, minute)
+                                        sessionTime = String.format("%02d:%02d:%02d", hourOfDay, minute, 0) // Include seconds as "00"
+
                                     },
                                     calendar.get(Calendar.HOUR_OF_DAY),
                                     calendar.get(Calendar.MINUTE),
@@ -286,8 +290,8 @@ fun CreateSessionScreen(
                                         TimePickerDialog(
                                             context,
                                             { _, hourOfDay, minute ->
-                                                sessionTime =
-                                                    String.format("%02d:%02d", hourOfDay, minute)
+                                                sessionTime = String.format("%02d:%02d:%02d", hourOfDay, minute, 0) // Include seconds as "00"
+
                                             },
                                             calendar.get(Calendar.HOUR_OF_DAY),
                                             calendar.get(Calendar.MINUTE),
@@ -337,13 +341,15 @@ fun CreateSessionScreen(
                     // Submit Button
                     Button(
                         onClick = {
+
+
                             val sessionRequest = SessionRequest(
                                 title = title,
                                 description = description,
                                 session_date = sessionDate,
                                 session_time = sessionTime,
-                                expert_id = "expert-123",
-                                expert_email = "nikul@example.com",
+                                expert_id = userId?.toString()?:"",
+                                expert_email = userEmail?.toString()?:"",
                                 duration = duration.toIntOrNull() ?: 15
                             )
 
@@ -353,8 +359,8 @@ fun CreateSessionScreen(
                                 session_date = sessionDate,
                                 session_time = sessionTime,
                                 duration = duration.toInt(),
-                                expert_id = "expert-123",
-                                expert_email = "nikul@example.com",
+                                expert_id = userId?.toString()?:"",
+                                expert_email = userEmail?.toString()?:"",
                             )
 
                             if (isEditing) {
@@ -395,4 +401,21 @@ fun CreateSessionScreen(
             )
         }
     }
+}
+
+
+// Function to format date and time
+fun formatDateTime(dayOfMonth: Int, month: Int, year: Int, hour: Int, minute: Int): Pair<String, String> {
+    val calendar = java.util.Calendar.getInstance()
+    calendar.set(year, month, dayOfMonth, hour, minute)
+
+    // Date formatter for "yyyy-MM-dd"
+    val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val formattedDate = dateFormatter.format(calendar.time)
+
+    // Time formatter for "HH:mm:ss"
+    val timeFormatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+    val formattedTime = timeFormatter.format(calendar.time)
+
+    return Pair(formattedDate, formattedTime)
 }

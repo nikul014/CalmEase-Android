@@ -22,14 +22,14 @@ import com.example.calmease.ui.theme.CalmPrimaryDark
 import com.example.calmease.ui.theme.CalmPrimaryLight
 import com.example.calmease.ui.theme.Fredoka
 import com.example.calmease.ui.theme.Poppins
+import com.example.calmease.viewmodel.Meditation
 import com.example.calmease.viewmodel.MeditationViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun MeditationDetailScreen(meditationId: Int?, viewModel: MeditationViewModel = viewModel()) {
+fun MeditationDetailScreen(meditation: Meditation?, viewModel: MeditationViewModel = viewModel()) {
 
-    val meditation = viewModel.meditations.value.find { it.meditation_id == meditationId }
     val sliderProgress = remember { Animatable(0f) }
     val borderGlow = remember { Animatable(0f) }
     val showEmojiSlider = remember { mutableStateOf(false) }

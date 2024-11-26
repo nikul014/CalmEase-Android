@@ -20,17 +20,19 @@ import androidx.navigation.compose.rememberNavController
 import com.example.calmease.ui.components.SearchBox
 import com.example.calmease.viewmodel.Article
 import com.example.calmease.viewmodel.ArticleViewModel
-
 @Composable
 fun ArticleScreen(viewModel: ArticleViewModel = viewModel(), navController: NavController) {
-    var expanded by remember { mutableStateOf(false) }
 
-    // Load the articles on the initial load or when needed
-    val scrollState = rememberScrollState()
     val articles = viewModel.articles.value
     val searchQuery = remember { mutableStateOf("") }
-    var filteredArticles by remember { mutableStateOf(emptyList<Article>()) }
-    var searchedArticles by remember { mutableStateOf(emptyList<Article>()) }
+
+    LaunchedEffect(searchQuery.value) {
+        if (searchQuery.value.isNotEmpty()) {
+            viewModel.searchArticles(searchQuery.value) // Trigger search on text change
+        } else {
+            viewModel.searchArticles("") // Empty search will reload all articles
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -54,9 +56,6 @@ fun ArticleScreen(viewModel: ArticleViewModel = viewModel(), navController: NavC
                             searchQuery.value = newQuery
                         },
                         onSearch = { query ->
-                            searchedArticles = articles.filter {
-                                it.title.contains(query, ignoreCase = true)
-                            }
                         }
                     )
                 }
@@ -70,16 +69,10 @@ fun ArticleScreen(viewModel: ArticleViewModel = viewModel(), navController: NavC
                 .fillMaxHeight()
                 .padding(horizontal = 8.dp)
         ) {
-            val articlesToDisplay = when {
-                filteredArticles.isNotEmpty() -> filteredArticles
-                searchedArticles.isNotEmpty() -> searchedArticles
-                else -> articles
-            }
-
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(articlesToDisplay) { article ->
+                items(articles) { article ->
                     ArticleItem(
                         article = article,
                         searchQuery = searchQuery.value,

@@ -5,40 +5,66 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import com.google.gson.Gson
 import androidx.compose.runtime.State
-
+import androidx.lifecycle.viewModelScope
+import com.example.calmease.network.ArticleApiService
+import com.example.calmease.network.MeditationApiService
+import com.example.calmease.network.Pagination
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 class MeditationViewModel(application: Application) : AndroidViewModel(application) {
     private val _meditations = mutableStateOf<List<Meditation>>(emptyList())
     val meditations: State<List<Meditation>> = _meditations
 
-    init {
-        loadMeditations()
+
+    // Function to load articles from the API
+    private suspend fun loadMeditation(page: Int, pageSize: Int, searchTerm: String) {
+        try {
+            // Logging interceptor
+            val loggingInterceptor = HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+
+            // OkHttpClient
+            val client = OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .build()
+
+            // Retrofit setup
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://calmease-backend.onrender.com/") // Update with the actual base URL
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val apiService = retrofit.create(MeditationApiService::class.java)
+
+            val response = apiService.getMeditation(page, pageSize, searchTerm)
+            _meditations.value = response.data // Set the articles data from API response
+        } catch (e: Exception) {
+            // Handle error, maybe set an error message or log it
+            _meditations.value = emptyList()
+        }
     }
 
-    private fun loadMeditations() {
-        // Load the JSON data from assets
-        val jsonString = loadJSONFromAsset("meditations.json")
-
-        // Parse the JSON string into the MeditationResponse object
-        val gson = Gson()
-        val meditationResponse = gson.fromJson(jsonString, MeditationResponse::class.java)
-
-        // Get the list of meditations and update the state
-        _meditations.value = meditationResponse.data
+    // Function to trigger the loadArticles API call when the search term is updated
+    fun searchMeditation(query: String) {
+        viewModelScope.launch {
+            loadMeditation(page = 1, pageSize = 5, searchTerm = query)
+        }
     }
 
-    private fun loadJSONFromAsset(fileName: String): String {
-        // Access the assets folder and read the JSON file
-        val assetManager = getApplication<Application>().assets
-        val inputStream = assetManager.open(fileName)
-        return inputStream.bufferedReader().use { it.readText() }
-    }
 }
 
 data class MeditationResponse(
-    val data: List<Meditation>
+    val data: List<Meditation>,
+    val pagination: Pagination
 )
+
 data class Meditation(
     val meditation_id: Int,
     val title: String,

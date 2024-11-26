@@ -1,7 +1,9 @@
 package com.example.calmease.network
 
 import android.util.Log
+import com.example.calmease.viewmodel.ArticleResponse
 import com.example.calmease.viewmodel.GoodMemory
+import com.example.calmease.viewmodel.MeditationResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
@@ -13,16 +15,14 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 
-suspend fun fetchToken(sessionId: String): String {
-
-
-
-    // Create an HttpLoggingInterceptor
+// 3. Helper Function
+suspend fun fetchToken(sessionId: String, userId: Int, userEmail: String, role: String): TokenResponse {
+    // Logging interceptor
     val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY // This will log the full body of the request/response
+        level = HttpLoggingInterceptor.Level.BODY
     }
 
-    // Create an OkHttpClient and add the logging interceptor
+    // OkHttpClient
     val client = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .build()
@@ -30,22 +30,65 @@ suspend fun fetchToken(sessionId: String): String {
     // Retrofit setup
     val retrofit = Retrofit.Builder()
         .baseUrl("https://calmease-backend.onrender.com/") // Update with the actual base URL
-        .client(client) // Add the OkHttpClient with the interceptor to Retrofit
+        .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-
     val apiService = retrofit.create(ApiService::class.java)
-    return apiService.getToken(sessionId).token
+
+    val requestBody = TokenRequest(
+        channelName = sessionId,
+        uid = userId,
+        role = role,
+        expireTime = 36000, // Set expire time (in seconds)
+        user_email = userEmail
+    )
+
+    return apiService.generateToken(requestBody)
 }
 
+// 2. Retrofit Interface
 interface ApiService {
-    @GET("api/getToken")
-    suspend fun getToken(@Query("sessionId") sessionId: String): TokenResponse
+    @POST("api/tokens/generate")
+    suspend fun generateToken(@Body requestBody: TokenRequest): TokenResponse
 }
 
-data class TokenResponse(val token: String)
 
+interface ArticleApiService {
+
+    @GET("api/articles/list")
+    suspend fun getArticles(
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int,
+        @Query("searchTerm") searchTerm: String
+    ): ArticleResponse
+}
+
+interface MeditationApiService {
+
+    @GET("api/meditation/list")
+    suspend fun getMeditation(
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int,
+        @Query("searchTerm") searchTerm: String
+    ): MeditationResponse
+}
+
+
+data class TokenRequest(
+    val channelName: String,
+    val uid: Int,
+    val role: String,
+    val expireTime: Int,
+    val user_email: String
+)
+data class TokenResponse(
+    val token: String,
+    val session_id: Int,
+    val user_id: Int,
+    val user_email: String,
+    val role: String
+)
 interface MemoryApiService {
     @POST("api/goodMemories/create")
     suspend fun createMemory(@Body memoryRequest: CreateMemoryRequest): Response<Unit>

@@ -24,104 +24,56 @@ import com.example.calmease.viewmodel.Article
 import com.example.calmease.viewmodel.ArticleViewModel
 
 @Composable
-fun ArticleDetailScreen(articleId: Int, viewModel: ArticleViewModel = viewModel()) {
+fun ArticleDetailScreen(article: Article, viewModel: ArticleViewModel = viewModel()) {
 
-    val article = viewModel.articles.value.find { it.Article_id == articleId }
     val scrollState = rememberScrollState()
 
-    if (article != null) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(vertical = 16.dp, horizontal = 24.dp)
-        ) {
-            // Title
-            Text(
-                text = article.title,
-                style = TextStyle(
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                ),
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-
-
-            // Summary Section
-            Text(
-                text = "Summary",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = article.description,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-
-            // Article Content Section
-            Text(
-                text = article.content,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-
-            // Information Card for Category
-            InformationCard(
-                rating = article.rating.toString(),
-                category = article.category
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Author Details Box
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White, shape = MaterialTheme.shapes.medium)
-                    .padding(16.dp)
-
-            ) {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.PersonOutline,
-                        contentDescription = "Author Icon",
-                        modifier = Modifier.size(36.dp).padding(4.dp)
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    AuthorDetails(
-                        author = article.author,
-                        duration = article.duration,
-                        createdAt = article.created_at
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun AuthorDetails(author: String, duration: String, createdAt: String) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+            .padding(vertical = 16.dp, horizontal = 24.dp)
+    ) {
+        // Title
         Text(
-            text = author,
-            style = MaterialTheme.typography.titleSmall.copy(fontFamily = Poppins),
-            modifier = Modifier.padding(bottom = 1.dp)
-        )
-        Text(
-            text = "$duration min read • $createdAt",
-            style = MaterialTheme.typography.bodySmall,
+            text = article.title,
+            style = TextStyle(
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            ),
             modifier = Modifier.padding(bottom = 8.dp)
         )
+
+
+
+        // Summary Section
+        Text(
+            text = "Summary",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text(
+            text = article.content,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+
+        // Information Card for Category
+        InformationCard(
+            rating = article.tags.toString(),
+            category = article.user_email
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+
     }
 }
+
 
 @Composable
 fun InformationCard(
@@ -142,8 +94,8 @@ fun InformationCard(
         )
 
         // Author, rating, and category info
-        InfoCard(label = "Rating", value = rating)
-        InfoCard(label = "Category", value = category)
+        InfoCard(label = "Tags", value = rating)
+        InfoCard(label = "Author", value = category)
     }
 }
 
@@ -174,23 +126,3 @@ fun InfoCard(label: String, value: String) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewArticleDetailScreen() {
-    val article = Article(
-        1,
-        "10 tips for modern communication",
-        "Health",
-        "Wi-Fi Hacking is much easier than most people think. Here’s how you can protect your router.",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ac neque nisi. Integer sed tortor nec risus feugiat.",
-        "John Doe",
-        "10 Dec",
-        "11/12",
-        "10",
-        "article",
-        "url",
-        "url",
-        4.5f
-    )
-    ArticleDetailScreen(articleId = article.Article_id)
-}

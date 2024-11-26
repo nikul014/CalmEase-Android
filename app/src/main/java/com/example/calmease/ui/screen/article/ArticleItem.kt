@@ -24,13 +24,16 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.calmease.ui.screen.meditation.highlightText
 import com.example.calmease.viewmodel.Article
+import com.google.gson.Gson
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun ArticleItem(article: Article, searchQuery: String = "", navController: NavController) {
     val highlightTitle =
         searchQuery.isNotEmpty() && article.title.contains(searchQuery, ignoreCase = true)
     val highlightDescription =
-        searchQuery.isNotEmpty() && article.description.contains(searchQuery, ignoreCase = true)
+        searchQuery.isNotEmpty() && article.content.contains(searchQuery, ignoreCase = true)
 
 
     Card(
@@ -38,10 +41,12 @@ fun ArticleItem(article: Article, searchQuery: String = "", navController: NavCo
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp) // Added horizontal padding for better spacing
             .clickable {
-                val articleId = article.Article_id
-                Log.d("ArticleDetail", "Article ID: $articleId")
-                navController.navigate("article_detail/$articleId")
 
+                val articleJson = Gson().toJson(article)  // Serialize the article to a JSON string
+                val encodedArticleJson = URLEncoder.encode(articleJson, StandardCharsets.UTF_8.toString()) // URL-encode the JSON string
+
+                Log.d("ArticleDetail", "Encoded Article: $encodedArticleJson")
+                navController.navigate("article_detail/$encodedArticleJson")
             },
         shape = RoundedCornerShape(16.dp), // Rounded corners for the card
         colors = CardDefaults.cardColors(containerColor = Color.White) // White background
@@ -52,7 +57,7 @@ fun ArticleItem(article: Article, searchQuery: String = "", navController: NavCo
                 .padding(16.dp)
         ) {
             AsyncImage(
-                model = article.image_url, // The image URL
+                model = article.image, // The image URL
                 contentDescription = article.title,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -75,7 +80,7 @@ fun ArticleItem(article: Article, searchQuery: String = "", navController: NavCo
 
             // Description with search highlight if necessary
             Text(
-                if (highlightDescription) highlightText(article.description, searchQuery).text else article.description,
+                if (highlightDescription) highlightText(article.content, searchQuery).text else article.content,
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
             )
@@ -84,7 +89,7 @@ fun ArticleItem(article: Article, searchQuery: String = "", navController: NavCo
 
             // Duration with a more visible style
             Text(
-                text = "by " + article.author,
+                text = "by " + article.user_email,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold

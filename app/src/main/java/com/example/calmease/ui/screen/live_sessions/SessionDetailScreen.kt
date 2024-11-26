@@ -3,6 +3,7 @@ package com.example.calmease.ui.screen.live_sessions
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,7 +34,12 @@ import com.example.calmease.CalmEaseApplication
 import com.example.calmease.JoinSessionActivity
 import com.example.calmease.network.Session
 import com.example.calmease.network.User
+import com.example.calmease.network.fetchToken
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -83,19 +89,37 @@ fun SessionDetailScreen(navController: NavController, sessionJson: String) {
                     )
                 }
             }
+
             Button(
                 onClick = {
+                    val userId = CalmEaseApplication.sharedPreferenceHelper.getUser()?.id ?: 12345
+                    val userEmail = CalmEaseApplication.sharedPreferenceHelper.getUser()?.email ?: "default@example.com"
+                    val role = if (session.expert_email == "test@gmail.com") "subscriber" else "publisher"
 
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val tokenResponse = fetchToken(
+                                sessionId = session.agora_channel_id?.toString() ?: "defaultChannel",
+                                userId = userId,
+                                userEmail = userEmail,
+                                role = role
+                            )
 
-                    val userId = CalmEaseApplication.sharedPreferenceHelper.getUser()?.id;
-
-                    val intent = Intent(context, JoinSessionActivity::class.java).apply {
-                        putExtra("SESSION_ID", session.agora_channel_id?.toString())
-                        putExtra("TOKEN", "007eJxTYFivIW3ep8y5pT8saDLjH60J4eUTH9X++VNRWDHhkeG273cUGFItTcyTTS2TklItkk2MLMwtTU2SkwxNTVLNjJNSLQzNWXud0wX4GBhUVfRZGBkYGVgYGBlEZzunM4FJZjDJAiYZGYxYGQyNjE1MAaNpIco=")
-                        putExtra("USER_ID", userId ?:12345)
-                        putExtra("ROLE", if (session.expert_email == "test@gmail.com") "subscriber" else "publisher")
+                            withContext(Dispatchers.Main) {
+                                val intent = Intent(context, JoinSessionActivity::class.java).apply {
+                                    putExtra("SESSION_ID", tokenResponse.session_id.toString())
+                                    putExtra("TOKEN", tokenResponse.token)
+                                    putExtra("USER_ID", tokenResponse.user_id)
+                                    putExtra("ROLE", role)
+                                }
+                                context.startActivity(intent)
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                Log.e("Token Fetch Error", "Error: ${e.message}")
+                            }
+                        }
                     }
-                    context.startActivity(intent)
                 },
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(50),
@@ -103,6 +127,7 @@ fun SessionDetailScreen(navController: NavController, sessionJson: String) {
             ) {
                 Text("Join Session", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
             }
+
         }
     }
 }

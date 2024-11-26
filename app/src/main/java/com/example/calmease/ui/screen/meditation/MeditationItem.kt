@@ -25,7 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.calmease.viewmodel.Meditation
-
+import com.google.gson.Gson
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 @Composable
@@ -40,9 +42,12 @@ fun MeditationItem(meditation: Meditation, searchQuery: String = "", navControll
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp) // Added horizontal padding for better spacing
             .clickable {
-                val meditationId = meditation.meditation_id
-                Log.d("MeditationDetail", "Meditation ID: $meditationId")
-                navController.navigate("meditation_detail/$meditationId")
+
+
+                val meditationJson = Gson().toJson(meditation)  // Serialize the article to a JSON string
+                val encodedMeditationJson = URLEncoder.encode(meditationJson, StandardCharsets.UTF_8.toString()) // URL-encode the JSON string
+                navController.navigate("meditation_detail/$encodedMeditationJson")
+
             },
         shape = RoundedCornerShape(16.dp), // Rounded corners for the card
         colors = CardDefaults.cardColors(containerColor = Color.White) // White background

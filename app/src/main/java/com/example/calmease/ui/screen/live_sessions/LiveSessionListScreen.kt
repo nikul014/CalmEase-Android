@@ -74,7 +74,7 @@ fun LiveSessionListScreen(
 
     // Automatically fetch sessions when the screen is launched
     LaunchedEffect(Unit) {
-        sessionViewModel.fetchSessions(1, 5, "Morning")
+        sessionViewModel.fetchSessions(1, 5, "")
     }
 
     // Layout for the screen

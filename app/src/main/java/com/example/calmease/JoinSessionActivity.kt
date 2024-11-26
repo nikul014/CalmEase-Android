@@ -102,9 +102,11 @@ class JoinSessionActivity : AppCompatActivity() {
     }
 
     private fun setupButtons() {
+        val audioButton = findViewById<ImageView>(R.id.btn_audio_toggle)
+        val cameraButton = findViewById<ImageView>(R.id.btn_camera_toggle)
+
         if (role == "publisher") {
 
-            val audioButton = findViewById<ImageView>(R.id.btn_audio_toggle)
             audioButton.setOnClickListener {
                 if (isAudioMuted) {
                     mRtcEngine?.enableAudio()
@@ -116,7 +118,6 @@ class JoinSessionActivity : AppCompatActivity() {
                 isAudioMuted = !isAudioMuted
             }
 
-            val cameraButton = findViewById<ImageView>(R.id.btn_camera_toggle)
             cameraButton.setOnClickListener {
                 if (isVideoMuted) {
                     mRtcEngine?.disableVideo()
@@ -143,7 +144,8 @@ class JoinSessionActivity : AppCompatActivity() {
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
             layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             container.layoutParams = layoutParams
-
+            audioButton.visibility = View.GONE
+            cameraButton.visibility = View.GONE
             // Hide the local video view for the subscriber
             val localView = findViewById<FrameLayout>(R.id.local_video_view_container)
             localView.visibility = View.GONE

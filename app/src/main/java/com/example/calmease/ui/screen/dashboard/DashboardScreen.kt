@@ -97,7 +97,12 @@ import com.example.calmease.ui.theme.CalmDarkBackground
 import com.example.calmease.ui.theme.CalmEaseTheme
 import com.example.calmease.viewmodel.BreathingViewModel
 import com.example.calmease.ui.theme.CalmPrimaryDark
+import com.example.calmease.viewmodel.Article
+import com.example.calmease.viewmodel.Meditation
 import com.example.calmease.viewmodel.SessionViewModel
+import com.google.gson.Gson
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun DashboardScreen(parentNavController: NavController) {
@@ -119,12 +124,21 @@ fun DashboardScreen(parentNavController: NavController) {
                 composable("meditation") {
                     MeditationScreen(viewModel = viewModel(), navController = navController)
                 }
-                composable("meditation_detail/{meditation_id}") { backStackEntry ->
-                    val meditationIdString = backStackEntry.arguments?.getString("meditation_id")
-                    val meditationId = meditationIdString?.toIntOrNull()
-                    Log.d("MeditationDetail", "Meditation ID: $meditationId")
-                    MeditationDetailScreen(meditationId = meditationId)
+
+                composable("meditation_detail/{meditationJson}") { backStackEntry ->
+                    val meditationJson = backStackEntry.arguments?.getString("meditationJson")
+                    if (meditationJson != null) {
+                        // URL-decode the string
+                        val decodedArticleJson = URLDecoder.decode(meditationJson, StandardCharsets.UTF_8.toString())
+
+                        // Deserialize the decoded JSON string into the Article object
+                        val meditation: Meditation = Gson().fromJson(decodedArticleJson, Meditation::class.java)
+
+                        // Pass the article data model to the ArticleDetailScreen
+                        MeditationDetailScreen(meditation = meditation)
+                    }
                 }
+
                 composable("breathing") {
                     val viewModel: BreathingViewModel = viewModel()
                     BreathingCategoriesScreen(viewModel = viewModel, navController = navController)
@@ -196,15 +210,21 @@ fun DashboardScreen(parentNavController: NavController) {
                             navController = navController
                         )
                     }
-                    composable("article_detail/{articleId}") { backStackEntry ->
-                        val articleIdString = backStackEntry.arguments?.getString("articleId")
-                        val articleId = articleIdString?.toIntOrNull()
-                        Log.d("ArticleDetail", "Article ID: $articleId")
-                        if (articleId != null) {
-                            ArticleDetailScreen(articleId = articleId)
-                        }
-                    }
 
+                composable("article_detail/{articleJson}") { backStackEntry ->
+                    val articleJson = backStackEntry.arguments?.getString("articleJson")
+                    if (articleJson != null) {
+                        // URL-decode the string
+                        val decodedArticleJson = URLDecoder.decode(articleJson, StandardCharsets.UTF_8.toString())
+
+                        // Deserialize the decoded JSON string into the Article object
+                        val article: Article = Gson().fromJson(decodedArticleJson, Article::class.java)
+                        Log.d("ArticleDetail", "Article: $article")
+
+                        // Pass the article data model to the ArticleDetailScreen
+                        ArticleDetailScreen(article = article)
+                    }
+                }
                     composable("profile") { CalmEaseApplication.sharedPreferenceHelper.getUser()
                         ?.let { it1 -> ProfileScreen(it1) } }
                     composable("more") {
