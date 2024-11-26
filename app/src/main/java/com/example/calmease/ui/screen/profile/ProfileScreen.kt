@@ -35,7 +35,6 @@ fun ProfileScreen(user: User) {
             .padding(16.dp)
     ) {
 
-        // User Information Section
         Card(
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -48,7 +47,6 @@ fun ProfileScreen(user: User) {
                     .padding(vertical = 16.dp, horizontal = 24.dp)
             ) {
 
-                // Profile Image at the Top
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()

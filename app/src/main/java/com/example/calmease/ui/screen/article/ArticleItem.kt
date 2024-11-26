@@ -39,17 +39,17 @@ fun ArticleItem(article: Article, searchQuery: String = "", navController: NavCo
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp) // Added horizontal padding for better spacing
+            .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable {
 
-                val articleJson = Gson().toJson(article)  // Serialize the article to a JSON string
-                val encodedArticleJson = URLEncoder.encode(articleJson, StandardCharsets.UTF_8.toString()) // URL-encode the JSON string
+                val articleJson = Gson().toJson(article)
+                val encodedArticleJson = URLEncoder.encode(articleJson, StandardCharsets.UTF_8.toString())
 
                 Log.d("ArticleDetail", "Encoded Article: $encodedArticleJson")
                 navController.navigate("article_detail/$encodedArticleJson")
             },
-        shape = RoundedCornerShape(16.dp), // Rounded corners for the card
-        colors = CardDefaults.cardColors(containerColor = Color.White) // White background
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(
             modifier = Modifier
@@ -57,16 +57,16 @@ fun ArticleItem(article: Article, searchQuery: String = "", navController: NavCo
                 .padding(16.dp)
         ) {
             AsyncImage(
-                model = article.image, // The image URL
+                model = article.image,
                 contentDescription = article.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp) .clip(RoundedCornerShape(16.dp)), // Apply rounded corners
+                    .height(200.dp) .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop
             )
 
 
-            Spacer(modifier = Modifier.height(12.dp)) // Add space between image and text
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Title with search highlight if necessary
             Text(
@@ -76,18 +76,16 @@ fun ArticleItem(article: Article, searchQuery: String = "", navController: NavCo
                 color = if (highlightTitle) MaterialTheme.colorScheme.primary else Color.Black
             )
 
-            Spacer(modifier = Modifier.height(4.dp)) // Space between title and description
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // Description with search highlight if necessary
             Text(
                 if (highlightDescription) highlightText(article.content, searchQuery).text else article.content,
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
             )
 
-            Spacer(modifier = Modifier.height(6.dp)) // Space between description and duration
+            Spacer(modifier = Modifier.height(6.dp))
 
-            // Duration with a more visible style
             Text(
                 text = "by " + article.user_email,
                 style = MaterialTheme.typography.bodySmall,

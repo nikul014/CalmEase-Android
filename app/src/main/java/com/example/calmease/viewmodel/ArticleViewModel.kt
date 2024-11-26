@@ -34,7 +34,7 @@ class ArticleViewModel(application: Application) : AndroidViewModel(application)
 
             // Retrofit setup
             val retrofit = Retrofit.Builder()
-                .baseUrl("https://calmease-backend.onrender.com/") // Update with the actual base URL
+                .baseUrl("https://calmease-backend.onrender.com/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
@@ -42,14 +42,12 @@ class ArticleViewModel(application: Application) : AndroidViewModel(application)
             val apiService = retrofit.create(ArticleApiService::class.java)
 
             val response = apiService.getArticles(page, pageSize, searchTerm)
-            _articles.value = response.data // Set the articles data from API response
+            _articles.value = response.data
         } catch (e: Exception) {
-            // Handle error, maybe set an error message or log it
             _articles.value = emptyList()
         }
     }
 
-    // Function to trigger the loadArticles API call when the search term is updated
     fun searchArticles(query: String) {
         viewModelScope.launch {
             loadArticles(page = 1, pageSize = 5, searchTerm = query)
@@ -75,15 +73,3 @@ data class Article(
     val image: String,
     val tags: String
 )
-
-
-//
-//data class Article(
-//    val category: String,
-//    val description: String,
-//    val author: String,
-//    val duration: String,
-//    val media_type: String,
-//    val content_url: String,
-//    val rating: Float,
-//)

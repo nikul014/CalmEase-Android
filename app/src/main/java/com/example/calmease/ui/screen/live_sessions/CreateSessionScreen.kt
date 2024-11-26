@@ -122,7 +122,6 @@ fun CreateSessionScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Input Fields
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -192,7 +191,7 @@ fun CreateSessionScreen(
                             Text(
                                 text = "Session Date",
                                 style = MaterialTheme.typography.bodySmall,
-                                modifier = Modifier.padding(bottom = 8.dp) // Space between label and the card
+                                modifier = Modifier.padding(bottom = 8.dp)
                             )
 
 
@@ -250,7 +249,7 @@ fun CreateSessionScreen(
                                 TimePickerDialog(
                                     context,
                                     { _, hourOfDay, minute ->
-                                        sessionTime = String.format("%02d:%02d:%02d", hourOfDay, minute, 0) // Include seconds as "00"
+                                        sessionTime = String.format("%02d:%02d:%02d", hourOfDay, minute, 0)
 
                                     },
                                     calendar.get(Calendar.HOUR_OF_DAY),
@@ -266,7 +265,7 @@ fun CreateSessionScreen(
                                 TimePickerDialog(
                                     context,
                                     { _, hourOfDay, minute ->
-                                        sessionTime = String.format("%02d:%02d:%02d", hourOfDay, minute, 0) // Include seconds as "00"
+                                        sessionTime = String.format("%02d:%02d:%02d", hourOfDay, minute, 0)
 
                                     },
                                     calendar.get(Calendar.HOUR_OF_DAY),
@@ -278,7 +277,7 @@ fun CreateSessionScreen(
                             Text(
                                 text = "Session Time",
                                 style = MaterialTheme.typography.bodySmall,
-                                modifier = Modifier.padding(bottom = 8.dp) // Space between label and the card
+                                modifier = Modifier.padding(bottom = 8.dp)
                             )
 
 
@@ -290,7 +289,7 @@ fun CreateSessionScreen(
                                         TimePickerDialog(
                                             context,
                                             { _, hourOfDay, minute ->
-                                                sessionTime = String.format("%02d:%02d:%02d", hourOfDay, minute, 0) // Include seconds as "00"
+                                                sessionTime = String.format("%02d:%02d:%02d", hourOfDay, minute, 0)
 
                                             },
                                             calendar.get(Calendar.HOUR_OF_DAY),
@@ -364,10 +363,8 @@ fun CreateSessionScreen(
                             )
 
                             if (isEditing) {
-                                // Update the session
                                 sessionViewModel.updateSession(newSession)
                             } else {
-                                // Create a new session
                                 sessionViewModel.createSession(sessionRequest)
                             }
                         },
@@ -382,7 +379,6 @@ fun CreateSessionScreen(
                     }
 
 
-                    // Error Message
                     if (errorMessage != null) {
                         Text(
                             text = errorMessage ?: "",
@@ -401,21 +397,4 @@ fun CreateSessionScreen(
             )
         }
     }
-}
-
-
-// Function to format date and time
-fun formatDateTime(dayOfMonth: Int, month: Int, year: Int, hour: Int, minute: Int): Pair<String, String> {
-    val calendar = java.util.Calendar.getInstance()
-    calendar.set(year, month, dayOfMonth, hour, minute)
-
-    // Date formatter for "yyyy-MM-dd"
-    val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    val formattedDate = dateFormatter.format(calendar.time)
-
-    // Time formatter for "HH:mm:ss"
-    val timeFormatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-    val formattedTime = timeFormatter.format(calendar.time)
-
-    return Pair(formattedDate, formattedTime)
 }

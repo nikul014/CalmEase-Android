@@ -21,22 +21,18 @@ class MeditationViewModel(application: Application) : AndroidViewModel(applicati
     val meditations: State<List<Meditation>> = _meditations
 
 
-    // Function to load articles from the API
     private suspend fun loadMeditation(page: Int, pageSize: Int, searchTerm: String) {
         try {
-            // Logging interceptor
             val loggingInterceptor = HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }
 
-            // OkHttpClient
             val client = OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
                 .build()
 
-            // Retrofit setup
             val retrofit = Retrofit.Builder()
-                .baseUrl("https://calmease-backend.onrender.com/") // Update with the actual base URL
+                .baseUrl("https://calmease-backend.onrender.com/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
@@ -44,14 +40,12 @@ class MeditationViewModel(application: Application) : AndroidViewModel(applicati
             val apiService = retrofit.create(MeditationApiService::class.java)
 
             val response = apiService.getMeditation(page, pageSize, searchTerm)
-            _meditations.value = response.data // Set the articles data from API response
+            _meditations.value = response.data
         } catch (e: Exception) {
-            // Handle error, maybe set an error message or log it
             _meditations.value = emptyList()
         }
     }
 
-    // Function to trigger the loadArticles API call when the search term is updated
     fun searchMeditation(query: String) {
         viewModelScope.launch {
             loadMeditation(page = 1, pageSize = 5, searchTerm = query)

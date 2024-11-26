@@ -82,13 +82,10 @@ class AuthViewModel : ViewModel() {
                     _state.value = AuthState.Success(response.body()?.message ?: "Login successful")
 
                 } else {
-                    // If the response is not successful, try to handle the error response format
                     try {
-                        // Attempt to parse the error response as a generic error
                         val errorResponse = Gson().fromJson(response.errorBody()?.charStream(), ErrorResponse::class.java)
                         _state.value = AuthState.Error(errorResponse.error ?: "Unknown error")
                     } catch (e: Exception) {
-                        // If parsing fails, show a generic error message
                         _state.value = AuthState.Error("An unknown error occurred")
                     }
                 }
@@ -132,11 +129,9 @@ class AuthViewModel : ViewModel() {
                     _state.value = AuthState.Success("Signup successful!")
                 } else {
                     try {
-                        // Attempt to parse the error response as a generic error
                         val errorResponse = Gson().fromJson(response.errorBody()?.charStream(), ErrorResponse::class.java)
                         _state.value = AuthState.Error(errorResponse.error ?: "Unknown error")
                     } catch (e: Exception) {
-                        // If parsing fails, show a generic error message
                         _state.value = AuthState.Error("An unknown error occurred")
                     }
                 }
@@ -157,16 +152,12 @@ class AuthViewModel : ViewModel() {
             try {
                 val response = authService.resetPassword(ResetPasswordRequest(email.value))
                 if (response.isSuccessful) {
-                    // Successful password reset
                     _state.value = AuthState.Success(response.body()?.message ?: "Password reset successfully.")
                 } else {
-                    // If the response is not successful, try to handle the error response format
                     try {
-                        // Attempt to parse the error response as a generic error
                         val errorResponse = Gson().fromJson(response.errorBody()?.charStream(), ErrorResponse::class.java)
                         _state.value = AuthState.Error(errorResponse.error ?: "Unknown error")
                     } catch (e: Exception) {
-                        // If parsing fails, show a generic error message
                         _state.value = AuthState.Error("An unknown error occurred")
                     }
                 }

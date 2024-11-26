@@ -35,7 +35,6 @@ data class ErrorResponse(
 )
 
 
-// LoginResponse model to represent the login API response
 data class LoginResponse(
     val message: String,
     val token: String,

@@ -34,7 +34,6 @@ fun ArticleDetailScreen(article: Article, viewModel: ArticleViewModel = viewMode
             .verticalScroll(scrollState)
             .padding(vertical = 16.dp, horizontal = 24.dp)
     ) {
-        // Title
         Text(
             text = article.title,
             style = TextStyle(
@@ -47,7 +46,6 @@ fun ArticleDetailScreen(article: Article, viewModel: ArticleViewModel = viewMode
 
 
 
-        // Summary Section
         Text(
             text = "Summary",
             style = MaterialTheme.typography.titleMedium,
@@ -63,7 +61,6 @@ fun ArticleDetailScreen(article: Article, viewModel: ArticleViewModel = viewMode
         Spacer(modifier = Modifier.height(8.dp))
 
 
-        // Information Card for Category
         InformationCard(
             rating = article.tags.toString(),
             category = article.user_email
@@ -86,14 +83,12 @@ fun InformationCard(
             .background(Color.White, shape = MaterialTheme.shapes.medium)
             .padding(16.dp)
     ) {
-        // Title of the Information section
         Text(
             text = "Information",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        // Author, rating, and category info
         InfoCard(label = "Tags", value = rating)
         InfoCard(label = "Author", value = category)
     }

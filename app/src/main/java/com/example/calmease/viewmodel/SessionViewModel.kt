@@ -17,7 +17,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SessionViewModel : ViewModel() {
 
-    // Callback for session creation and update
     private var _onSessionCreated: ((SessionRequest) -> Unit)? = null
     private var _onSessionUpdated: ((Session) -> Unit)? = null
 
@@ -28,20 +27,17 @@ class SessionViewModel : ViewModel() {
     fun setOnSessionUpdatedCallback(callback: (Session) -> Unit) {
         _onSessionUpdated = callback
     }
-    // Create an HttpLoggingInterceptor
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY // This will log the full body of the request/response
+        level = HttpLoggingInterceptor.Level.BODY
     }
 
-    // Create an OkHttpClient and add the logging interceptor
     private val client = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .build()
 
-    // Retrofit setup
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://calmease-backend.onrender.com/") // Update with the actual base URL
-        .client(client) // Add the OkHttpClient with the interceptor to Retrofit
+        .baseUrl("https://calmease-backend.onrender.com/")
+        .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -56,7 +52,6 @@ class SessionViewModel : ViewModel() {
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
-    // Fetch sessions list from API
     fun fetchSessions(page: Int, pageSize: Int, searchTerm: String) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -76,7 +71,6 @@ class SessionViewModel : ViewModel() {
         }
     }
 
-    // Create a new session
     fun createSession(sessionRequest: SessionRequest) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -101,7 +95,6 @@ class SessionViewModel : ViewModel() {
         }
     }
 
-    // Update an existing session
     fun updateSession(session: Session) {
         viewModelScope.launch {
             _isLoading.value = true

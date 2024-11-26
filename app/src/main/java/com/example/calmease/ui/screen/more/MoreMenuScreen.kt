@@ -45,7 +45,6 @@ fun MoreMenuScreen(navController: NavController, context: Context, parentNavCont
 
 @Composable
 fun MoreCard(navController: NavController,context: Context, parentNavController: NavController) {
-    // Define the MenuItems for each card
     val liveSession = listOf(
         MenuItem(
             titleText = "Live Sessions",
@@ -63,9 +62,7 @@ fun MoreCard(navController: NavController,context: Context, parentNavController:
             titleText = "Logout",
             navigationRoute ="logout",
             onClickEvent = {     SharedPreferenceHelper.getInstance(context).clearAll()
-                // Navigate to the login screen
                 parentNavController.navigate("login") {
-                    // Clear the back stack so that the user can't go back to the menu after logout
                     popUpTo("login") { inclusive = true }
                 }
             }
@@ -111,10 +108,10 @@ fun MoreCardItem(title: String,  menuItems: List<MenuItem>) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp) // Added horizontal padding for better spacing
+            .padding(8.dp)
             ,
-        shape = RoundedCornerShape(16.dp), // Rounded corners for the card
-        colors = CardDefaults.cardColors(containerColor = Color.White) // White background
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
 
@@ -137,7 +134,7 @@ fun MoreCardItem(title: String,  menuItems: List<MenuItem>) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp) // equal padding for items
+                    .padding(vertical = 8.dp)
             ) {
                 menuItems.forEach { menuItem ->
                     ClickableMenuItem(menuItem = menuItem)
@@ -157,12 +154,12 @@ fun ClickableMenuItem(menuItem: MenuItem) {
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             )
-            .padding(vertical = 8.dp) // Padding around the clickable area
+            .padding(vertical = 8.dp)
     ) {
         Text(
             text = menuItem.titleText,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.align(Alignment.CenterStart) // Align text within the Box
+            modifier = Modifier.align(Alignment.CenterStart)
         )
     }
 }

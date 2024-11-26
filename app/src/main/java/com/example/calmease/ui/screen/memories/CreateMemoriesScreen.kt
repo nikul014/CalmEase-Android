@@ -51,12 +51,8 @@ import java.util.Locale
 @SuppressLint("NewApi")
 @Composable
 fun CreateMemoryScreen(navController: NavController) {
-    // State variables for each input field
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    var selectedTime by remember { mutableStateOf(LocalTime.now()) }
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     // State for showing loading and success/error messages
     var isSubmitting by remember { mutableStateOf(false) }
@@ -69,7 +65,7 @@ fun CreateMemoryScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp) // Add bottom padding to ensure no overlap
+                .padding(24.dp)
         ) {
             Box(
                 modifier = Modifier
@@ -99,10 +95,10 @@ fun CreateMemoryScreen(navController: NavController) {
                     .padding(
                         vertical = 8.dp,
                         horizontal = 16.dp
-                    ) // Added horizontal padding for better spacing
+                    )
                 ,
-                shape = RoundedCornerShape(16.dp), // Rounded corners for the card
-                colors = CardDefaults.cardColors(containerColor = Color.White) // White background
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
                 Box(
                     modifier = Modifier
@@ -137,8 +133,7 @@ fun CreateMemoryScreen(navController: NavController) {
                         )
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Image Upload
-                        Button(onClick = { /* Add image picker logic */ }) {
+                        Button(onClick = { }) {
                             Text("Upload Image", color = Color.White)
                         }
 
@@ -184,7 +179,6 @@ fun CreateMemoryScreen(navController: NavController) {
                             )
                         }
 
-                        // Error Message
                         if (errorMessage.isNotEmpty()) {
                             Text(
                                 text = errorMessage,

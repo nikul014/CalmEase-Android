@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.calmease.R
 import com.example.calmease.ui.theme.CalmBackground
@@ -54,11 +56,16 @@ fun MemoryDetailsScreen(
                     .height(200.dp)
                     .padding(bottom = 16.dp)
             ) {
-                Image(
-                    painter = rememberAsyncImagePainter(memory.imageUrl ?: R.drawable.app_logo),
-                    contentDescription = "Memory Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                AsyncImage(
+                    model = memory.imageUrl
+                        ?: "https://i.pinimg.com/736x/52/a3/93/52a393b4b0671690bb8c05cb31536cb2.jpg",
+                    contentDescription = memory.title,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(16.dp)), // Apply rounded corners
+
+                    contentScale = ContentScale.Crop
                 )
             }
 

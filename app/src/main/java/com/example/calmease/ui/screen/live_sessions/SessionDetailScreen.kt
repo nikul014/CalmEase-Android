@@ -62,12 +62,10 @@ fun SessionDetailScreen(navController: NavController, sessionJson: String) {
             .verticalScroll(scrollState)
             .padding(vertical = 16.dp, horizontal = 24.dp)
     ) {
-        // Session details in cards
         SessionDetailCard(session = session)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Buttons to Edit or Join Session
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)

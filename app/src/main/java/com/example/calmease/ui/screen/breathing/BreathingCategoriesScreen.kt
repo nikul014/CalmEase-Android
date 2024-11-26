@@ -37,12 +37,12 @@ fun BreathingCategoriesScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 16.dp) // Added horizontal padding for better spacing
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
                     .clickable {
                         navController.navigate("breathing_exercises/${category.id}")
                     },
-                shape = RoundedCornerShape(16.dp), // Rounded corners for the card
-                colors = CardDefaults.cardColors(containerColor = Color.White) // White background
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp)
@@ -52,12 +52,11 @@ fun BreathingCategoriesScreen(
                         contentDescription = category.title,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp) .clip(RoundedCornerShape(16.dp)), // Apply rounded corners
+                            .height(200.dp) .clip(RoundedCornerShape(16.dp)),
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Title with search highlight if necessary
                     Text(
                         text = category.title,
                         style = MaterialTheme.typography.titleSmall,

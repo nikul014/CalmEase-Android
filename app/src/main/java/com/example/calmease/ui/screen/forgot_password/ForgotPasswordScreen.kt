@@ -44,7 +44,6 @@ fun ForgotPasswordScreen(
 
     LaunchedEffect(state) {
         if (state is AuthState.Success) {
-            // Navigate back to the login screen or show a success message
             Toast.makeText(context, "Check your email for reset instructions.", Toast.LENGTH_SHORT).show()
             navController.navigate("login") {
                 popUpTo("forgotPassword") { inclusive = true }
@@ -62,9 +61,8 @@ fun ForgotPasswordScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 16.dp) // Add bottom padding to ensure no overlap
+                .padding(bottom = 16.dp)
         ) {
-            // App logo and text content at the top
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -74,7 +72,7 @@ fun ForgotPasswordScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
-                        painter = painterResource(id = R.drawable.app_logo), // Replace with your drawable name
+                        painter = painterResource(id = R.drawable.app_logo),
                         contentDescription = "App Logo",
                         modifier = Modifier.size(100.dp)
                     )
@@ -94,7 +92,6 @@ fun ForgotPasswordScreen(
                 }
             }
 
-            // Card with Forgot Password form
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,11 +108,11 @@ fun ForgotPasswordScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.White)
-                        .padding(horizontal = 30.dp, vertical = 36.dp) // Padding around the Box
+                        .padding(horizontal = 30.dp, vertical = 36.dp)
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth(), // White background inside the Column
+                            .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         val forgotPasswordText = "Enter your email to reset password."
@@ -132,7 +129,6 @@ fun ForgotPasswordScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Email Field
                         CustomTextField(
                             value = email,
                             onValueChange = authViewModel::onEmailChange,
@@ -143,7 +139,6 @@ fun ForgotPasswordScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Handle different states: Loading, Success, Error
                         when (state) {
                             is AuthState.Loading -> CircularProgressIndicator()
                             is AuthState.Success -> Text(
@@ -161,7 +156,6 @@ fun ForgotPasswordScreen(
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        // Reset Password Button
                         CustomButton(
                             text = "Reset Password",
                             onClick = { authViewModel.performForgotPassword() }

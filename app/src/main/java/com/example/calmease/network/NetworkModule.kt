@@ -5,7 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object NetworkModule {
-    private const val BASE_URL = "https://calmease-backend.onrender.com" // Replace with your API base URL
+    private const val BASE_URL = "https://calmease-backend.onrender.com"
 
     val authService: AuthService by lazy {
         Retrofit.Builder()

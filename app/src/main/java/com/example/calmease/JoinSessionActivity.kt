@@ -78,7 +78,6 @@ class JoinSessionActivity : AppCompatActivity() {
         userId = intent.getIntExtra("USER_ID", 0)
         role = intent.getStringExtra("ROLE")
 
-        // Request permissions if necessary
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.CAMERA
@@ -97,7 +96,6 @@ class JoinSessionActivity : AppCompatActivity() {
             initializeAndJoinChannel()
         }
 
-        // Set button actions
         setupButtons()
     }
 
@@ -134,7 +132,6 @@ class JoinSessionActivity : AppCompatActivity() {
                 endCall()
             }
 
-            // Hide the remote video view for the publisher
             val remoteView = findViewById<FrameLayout>(R.id.remote_video_view_container)
             remoteView.visibility = View.GONE
         } else {
@@ -146,7 +143,6 @@ class JoinSessionActivity : AppCompatActivity() {
             container.layoutParams = layoutParams
             audioButton.visibility = View.GONE
             cameraButton.visibility = View.GONE
-            // Hide the local video view for the subscriber
             val localView = findViewById<FrameLayout>(R.id.local_video_view_container)
             localView.visibility = View.GONE
         }
@@ -194,7 +190,6 @@ class JoinSessionActivity : AppCompatActivity() {
         }
     }
 
-    // Handle the result of permission request
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,

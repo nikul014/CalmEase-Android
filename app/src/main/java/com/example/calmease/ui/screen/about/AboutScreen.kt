@@ -25,7 +25,7 @@ import coil.compose.rememberImagePainter
 data class TeamMember(
     val name: String,
     val role: String,
-    val profileImage: String // Path to profile image
+    val profileImage: String
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +46,7 @@ fun AboutScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(vertical = 24.dp, horizontal = 36.dp)
-            .verticalScroll(scrollState), // Make the column scrollable
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -71,7 +71,6 @@ fun AboutScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Team member list
             teamMembers.forEach { member ->
                 TeamMemberCard(member)
             }
@@ -107,10 +106,10 @@ fun TeamMemberCard(member: TeamMember) {
             .padding(
                 vertical = 8.dp,
                 horizontal = 8.dp
-            ) // Added horizontal padding for better spacing
+            )
         ,
-        shape = RoundedCornerShape(16.dp), // Rounded corners for the card
-        colors = CardDefaults.cardColors(containerColor = Color.White) // White background
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
             modifier = Modifier

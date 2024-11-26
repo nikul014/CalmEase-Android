@@ -78,9 +78,8 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 16.dp) // Add bottom padding to ensure no overlap
+                .padding(bottom = 16.dp)
         ) {
-            // App logo and text content at the top
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -91,7 +90,7 @@ fun LoginScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
-                        painter = painterResource(id = R.drawable.app_logo), // Replace with your drawable name
+                        painter = painterResource(id = R.drawable.app_logo),
                         contentDescription = "App Logo",
                         modifier = Modifier.size(100.dp)
                     )
@@ -111,7 +110,6 @@ fun LoginScreen(
                 }
             }
 
-            // Card with login form
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -128,11 +126,11 @@ fun LoginScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.White)
-                        .padding(horizontal = 30.dp, vertical = 36.dp) // Padding around the Box
+                        .padding(horizontal = 30.dp, vertical = 36.dp)
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth(), // White background inside the Column
+                            .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         val loginText = "Log in to your account."
@@ -158,7 +156,6 @@ fun LoginScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Email Field
                         CustomTextField(
                             value = email,
                             onValueChange = authViewModel::onEmailChange,
@@ -169,7 +166,6 @@ fun LoginScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Password Field
                         CustomTextField(
                             value = password,
                             onValueChange = authViewModel::onPasswordChange,
@@ -182,7 +178,6 @@ fun LoginScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        // State Handling
                         when (state) {
                             is AuthState.Loading -> CircularProgressIndicator()
                             is AuthState.Success -> Text(
@@ -200,24 +195,22 @@ fun LoginScreen(
                             else -> {}
                         }
                         Row(
-                            modifier = Modifier.fillMaxWidth(), // Make sure the row takes full width
-                            horizontalArrangement = Arrangement.End // Align children (text) to the right
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
                         ) {
                             Text(
                                 text = "Forgot Password?",
-                                color = MaterialTheme.colorScheme.primary, // Use primary color from theme
-                                style = MaterialTheme.typography.bodySmall, // Underlined text
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodySmall,
                                 modifier = Modifier
                                     .clickable {
-                                        // Navigate to the reset password screen or perform any action
-                                        navController.navigate("resetPassword") // Adjust the navigation route
+                                        navController.navigate("resetPassword")
                                     }
-                                    .padding(top = 4.dp) // Padding for spacing
+                                    .padding(top = 4.dp)
                             )
                         }
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        // Buttons
                         CustomButton(
                             text = "Login",
                             onClick = { authViewModel.performLogin() }

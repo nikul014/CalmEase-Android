@@ -23,11 +23,9 @@ fun BreathingDetailScreen(
     audioUrl: String,
     navController: NavController
 ) {
-    // State to manage the audio player and play status
     var isPlaying by remember { mutableStateOf(false) }
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
 
-    // Parse the timing (Inhale | Hold In | Exhale | Hold Out)
     val timings = exerciseTiming.split("|").map { it.trim() }
     val inhaleTime = timings.getOrNull(0) ?: "0"
     val holdInTime = timings.getOrNull(1) ?: "0"
@@ -37,7 +35,6 @@ fun BreathingDetailScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Display the background image
         AsyncImage(
             model = backgroundImage,
             contentDescription = "Background",
@@ -52,16 +49,14 @@ fun BreathingDetailScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Display the category image at the top
             AsyncImage(
                 model = categoryImage,
                 contentDescription = "Exercise Image",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp) .clip(RoundedCornerShape(16.dp)), // Apply rounded corners
+                    .height(200.dp) .clip(RoundedCornerShape(16.dp)),
             )
 
-            // Timing breakdown display at the bottom
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier.fillMaxWidth()
@@ -72,7 +67,6 @@ fun BreathingDetailScreen(
                 TimingCard(label = "Hold Out", time = holdOutTime)
             }
 
-            // Start/Stop Button at the bottom
             Button(
                 onClick = {
                     if (isPlaying) {
@@ -83,7 +77,7 @@ fun BreathingDetailScreen(
                     } else {
                         mediaPlayer = MediaPlayer().apply {
                             setDataSource(audioUrl)
-                            isLooping = true // Loop the audio
+                            isLooping = true
                             prepare()
                             start()
                         }
@@ -97,7 +91,6 @@ fun BreathingDetailScreen(
         }
     }
 
-    // Clean up the MediaPlayer when the composable is disposed
     DisposableEffect(Unit) {
         onDispose {
             mediaPlayer?.release()
@@ -106,7 +99,6 @@ fun BreathingDetailScreen(
     }
 }
 
-// Helper Composable for Timing Display
 @Composable
 fun TimingCard(label: String, time: String) {
     Card(

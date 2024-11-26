@@ -27,7 +27,7 @@ fun TermsConditionsScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(vertical = 24.dp, horizontal = 36.dp)
-                .verticalScroll(scrollState), // Make the column scrollable
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -36,14 +36,13 @@ fun TermsConditionsScreen() {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Wrap the Terms and Conditions content in a clickable Card with rounded corners
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp,) // Added horizontal padding for better spacing
+                    .padding(vertical = 8.dp,)
                    ,
-                shape = RoundedCornerShape(16.dp), // Rounded corners for the card
-                colors = CardDefaults.cardColors(containerColor = Color.White) // White background
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
                 Column(
                     modifier = Modifier

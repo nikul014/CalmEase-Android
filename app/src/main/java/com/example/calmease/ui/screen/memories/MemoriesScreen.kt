@@ -131,7 +131,10 @@ fun GoodMemoryItem(memory: GoodMemory, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp) // Added horizontal padding for better spacing
+            .padding(
+                vertical = 8.dp,
+                horizontal = 16.dp
+            ) // Added horizontal padding for better spacing
             .clickable {
                 val memoryJson = Gson().toJson(memory) // Serialize the memory object to JSON
                 navController.navigate("memory_detail/${Uri.encode(memoryJson)}") // Pass the JSON string as an argument
@@ -146,11 +149,13 @@ fun GoodMemoryItem(memory: GoodMemory, navController: NavController) {
         ) {
             // Image with fixed height and proper content scaling
             AsyncImage(
-                model = "https://i.pinimg.com/736x/52/a3/93/52a393b4b0671690bb8c05cb31536cb2.jpg",
+                model = memory.imageUrl
+                    ?: "https://i.pinimg.com/736x/52/a3/93/52a393b4b0671690bb8c05cb31536cb2.jpg",
                 contentDescription = memory.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)        .clip(RoundedCornerShape(16.dp)), // Apply rounded corners
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(16.dp)), // Apply rounded corners
 
                 contentScale = ContentScale.Crop
             )
@@ -178,7 +183,7 @@ fun GoodMemoryItem(memory: GoodMemory, navController: NavController) {
 
             // Duration with a more visible style
             Text(
-                text = memory.memory_date_time?:"",
+                text = memory.memory_date_time ?: "",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold

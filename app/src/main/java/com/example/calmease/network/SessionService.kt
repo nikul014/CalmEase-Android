@@ -119,7 +119,7 @@ data class Pagination(
 data class CreateMemoryRequest(
     val title: String,
     val description: String,
-    val memory_date_time: String,  // Assuming this is a string for now, but it might be better as a DateTime if appropriate
+    val memory_date_time: String,
     val image_url: String,
     val user_id: Int
 )

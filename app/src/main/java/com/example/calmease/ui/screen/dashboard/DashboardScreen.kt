@@ -128,13 +128,10 @@ fun DashboardScreen(parentNavController: NavController) {
                 composable("meditation_detail/{meditationJson}") { backStackEntry ->
                     val meditationJson = backStackEntry.arguments?.getString("meditationJson")
                     if (meditationJson != null) {
-                        // URL-decode the string
                         val decodedArticleJson = URLDecoder.decode(meditationJson, StandardCharsets.UTF_8.toString())
 
-                        // Deserialize the decoded JSON string into the Article object
                         val meditation: Meditation = Gson().fromJson(decodedArticleJson, Meditation::class.java)
 
-                        // Pass the article data model to the ArticleDetailScreen
                         MeditationDetailScreen(meditation = meditation)
                     }
                 }
@@ -214,14 +211,11 @@ fun DashboardScreen(parentNavController: NavController) {
                 composable("article_detail/{articleJson}") { backStackEntry ->
                     val articleJson = backStackEntry.arguments?.getString("articleJson")
                     if (articleJson != null) {
-                        // URL-decode the string
                         val decodedArticleJson = URLDecoder.decode(articleJson, StandardCharsets.UTF_8.toString())
 
-                        // Deserialize the decoded JSON string into the Article object
                         val article: Article = Gson().fromJson(decodedArticleJson, Article::class.java)
                         Log.d("ArticleDetail", "Article: $article")
 
-                        // Pass the article data model to the ArticleDetailScreen
                         ArticleDetailScreen(article = article)
                     }
                 }
@@ -252,21 +246,20 @@ fun DashboardScreen(parentNavController: NavController) {
 fun BottomNavigationBar(navController: NavController) {
     val currentRoute = navController.currentBackStackEntryAsState()?.value?.destination?.route
 
-    // Wrapping NavigationBar in a Box to add background and rounded corners
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .shadow(
                 elevation = 8.dp,
                 shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                clip = false // Set to true if you want to clip the content within the shape
+                clip = false
             )
             .background(Color.White, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .padding(4.dp) // Optional padding for better spacing
+            .padding(4.dp)
     ) {
         NavigationBar(
             modifier = Modifier.fillMaxWidth(),
-            containerColor = Color.Transparent // Ensure the bar itself has a white background
+            containerColor = Color.Transparent
         ) {
             NavigationBarItem(
                 selected = currentRoute == "meditation",

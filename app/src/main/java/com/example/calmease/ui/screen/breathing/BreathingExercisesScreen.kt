@@ -23,7 +23,6 @@ fun BreathingExercisesScreen(
     navController: NavController,
     viewModel: com.example.calmease.viewmodel.BreathingViewModel
 ) {
-    // Fetch the category based on the ID
     val category = viewModel.categories.value.find { it.id == categoryId }
 
     if (category != null) {
@@ -37,21 +36,19 @@ fun BreathingExercisesScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp, horizontal = 16.dp) // Added horizontal padding for better spacing
+                        .padding(vertical = 8.dp, horizontal = 16.dp)
                         .clickable {
-                            // Encode the parameters for navigation
                             val encodedTiming = java.net.URLEncoder.encode(exercise.timing, "UTF-8")
                             val encodedCategoryImage = java.net.URLEncoder.encode(category.category_image, "UTF-8")
                             val encodedBackgroundImage = java.net.URLEncoder.encode(category.background_image, "UTF-8")
                             val encodedAudioUrl = java.net.URLEncoder.encode(exercise.audio_url, "UTF-8")
 
-                            // Navigate to the detail screen
                             navController.navigate(
                                 "breathing_detail/$encodedCategoryImage/$encodedBackgroundImage/$encodedTiming/$encodedAudioUrl"
                             )
                         },
-                    shape = RoundedCornerShape(16.dp), // Rounded corners for the card
-                    colors = CardDefaults.cardColors(containerColor = Color.White) // White background
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp)

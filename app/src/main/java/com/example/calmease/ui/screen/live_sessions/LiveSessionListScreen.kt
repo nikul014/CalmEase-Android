@@ -72,12 +72,10 @@ fun LiveSessionListScreen(
     val userEmail = CalmEaseApplication.sharedPreferenceHelper.getUser()?.email
     val userType = CalmEaseApplication.sharedPreferenceHelper.getUserType()
 
-    // Automatically fetch sessions when the screen is launched
     LaunchedEffect(Unit) {
         sessionViewModel.fetchSessions(1, 5, "")
     }
 
-    // Layout for the screen
     Box(
         contentAlignment = Alignment.BottomEnd
     ) {
@@ -139,7 +137,6 @@ fun formatSessionDateTime(sessionDate: String, sessionTime: String): String {
 
     val outputFormatter = DateTimeFormatter.ofPattern("h a - dd MMMM", Locale.ENGLISH)
 
-    // Parse the date string into ZonedDateTime
     val parsedDateTime = ZonedDateTime.parse(sessionDate).toLocalDate().atTime(LocalTime.parse(sessionTime))
     return parsedDateTime.format(outputFormatter)
 }
@@ -153,10 +150,10 @@ fun LiveSessionItem(session: Session, onClick: () -> Unit) {
             .padding(
                 vertical = 8.dp,
                 horizontal = 16.dp
-            ) // Added horizontal padding for better spacing
+            )
             .clickable { onClick() },
-        shape = RoundedCornerShape(16.dp), // Rounded corners for the card
-        colors = CardDefaults.cardColors(containerColor = Color.White) // White background
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
 
     ) {
         Column(modifier = Modifier.padding(16.dp)) {

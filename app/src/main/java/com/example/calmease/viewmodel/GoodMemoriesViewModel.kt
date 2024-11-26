@@ -43,7 +43,6 @@ class GoodMemoriesViewModel : ViewModel() {
                 val response = apiService.getMemories(searchTerm, page, pageSize)
                 _memories.value = response.data
             } catch (e: Exception) {
-                // Handle the error, e.g., log it, show a toast, etc.
             }
         }
     }

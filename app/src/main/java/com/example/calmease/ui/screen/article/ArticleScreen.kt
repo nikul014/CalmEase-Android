@@ -28,15 +28,14 @@ fun ArticleScreen(viewModel: ArticleViewModel = viewModel(), navController: NavC
 
     LaunchedEffect(searchQuery.value) {
         if (searchQuery.value.isNotEmpty()) {
-            viewModel.searchArticles(searchQuery.value) // Trigger search on text change
+            viewModel.searchArticles(searchQuery.value)
         } else {
-            viewModel.searchArticles("") // Empty search will reload all articles
+            viewModel.searchArticles("")
         }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
 
-        // Search Box Section
         Column(
             modifier = Modifier
                 .wrapContentHeight()
@@ -63,7 +62,6 @@ fun ArticleScreen(viewModel: ArticleViewModel = viewModel(), navController: NavC
 
         }
 
-        // Articles List Section
         Column(
             modifier = Modifier
                 .fillMaxHeight()
@@ -78,7 +76,7 @@ fun ArticleScreen(viewModel: ArticleViewModel = viewModel(), navController: NavC
                         searchQuery = searchQuery.value,
                         navController = navController
                     )
-                    Spacer(modifier = Modifier.height(8.dp)) // Space between items
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }
