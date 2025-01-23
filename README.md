@@ -1,8 +1,10 @@
 
 # CalmEase - Mindfulness App
-
 ![Screenshot 1](/App%20Preview%20Shots/CalmEase.png)
-[![Watch the video](/App%20Preview%20Shots/app_logo.png)](https://vimeo.com/1049784764/6f2052d13d)
+
+<a href="https://vimeo.com/1049784764" target="_blank">
+  <img src="/App%20Preview%20Shots/video_button.png" alt="Watch the video" style="width: 150px; height: auto;">
+</a>
 
 CalmEase is a comprehensive mindfulness application designed to improve mental well-being by providing tools and techniques to manage stress, anxiety, and enhance overall emotional health. Whether through guided meditations, breathing exercises, live counseling sessions, or curated mindfulness readings, CalmEase fosters a holistic approach to mental wellness for users of all age groups.
 
